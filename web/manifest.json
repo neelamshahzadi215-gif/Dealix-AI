@@ -1,6 +1,6 @@
 {
-    "name": "pricewise_ai",
-    "short_name": "pricewise_ai",
+    "name": "dealix_ai",
+    "short_name": "dealix_ai",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
@@ -33,3 +33,4 @@
         }
     ]
 }
+
