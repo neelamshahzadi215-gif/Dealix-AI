@@ -1,4 +1,4 @@
-#  Dealix_AI
+#  Dealix AI
 
 A new Flutter project.
 
