@@ -1,4 +1,4 @@
-# pricewise_ai
+#  Dealix AI
 
 A new Flutter project.
 
