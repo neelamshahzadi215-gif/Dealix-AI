@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -70,15 +69,11 @@ class _SplashScreenState extends State<SplashScreen>
                 // ==========================================================
                 // TOP RIGHT SHAPES
                 // ==========================================================
-
                 Positioned(
                   top: 0,
                   right: 0,
                   child: CustomPaint(
-                    size: Size(
-                      width * 0.63,
-                      height * 0.31,
-                    ),
+                    size: Size(width * 0.63, height * 0.31),
                     painter: _TopRightShapesPainter(),
                   ),
                 ),
@@ -86,15 +81,11 @@ class _SplashScreenState extends State<SplashScreen>
                 // ==========================================================
                 // BOTTOM LEFT SHAPES
                 // ==========================================================
-
                 Positioned(
                   bottom: 0,
                   left: 0,
                   child: CustomPaint(
-                    size: Size(
-                      width * 0.63,
-                      height * 0.31,
-                    ),
+                    size: Size(width * 0.63, height * 0.31),
                     painter: _BottomLeftShapesPainter(),
                   ),
                 ),
@@ -102,7 +93,6 @@ class _SplashScreenState extends State<SplashScreen>
                 // ==========================================================
                 // CENTER LOGO
                 // ==========================================================
-
                 Positioned(
                   left: 0,
                   right: 0,
@@ -122,7 +112,6 @@ class _SplashScreenState extends State<SplashScreen>
                 // ==========================================================
                 // MOVING LOADING INDICATOR
                 // ==========================================================
-
                 Positioned(
                   left: 0,
                   right: 0,
@@ -152,9 +141,7 @@ class _SplashScreenState extends State<SplashScreen>
 class _LoadingSection extends StatelessWidget {
   final double progress;
 
-  const _LoadingSection({
-    required this.progress,
-  });
+  const _LoadingSection({required this.progress});
 
   @override
   Widget build(BuildContext context) {
@@ -164,9 +151,7 @@ class _LoadingSection extends StatelessWidget {
         SizedBox(
           width: 125,
           height: 3,
-          child: CustomPaint(
-            painter: _LoadingBarPainter(progress),
-          ),
+          child: CustomPaint(painter: _LoadingBarPainter(progress)),
         ),
         const SizedBox(height: 7),
         const Text(
@@ -193,54 +178,34 @@ class _LoadingBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final backgroundPaint = Paint()
-      ..color = const Color(0xFF08715D);
+    final backgroundPaint = Paint()..color = const Color(0xFF08715D);
 
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Offset.zero & size,
-        const Radius.circular(10),
-      ),
+      RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(10)),
       backgroundPaint,
     );
 
     const movingWidth = 42.0;
 
-    final x = -movingWidth +
-        ((size.width + movingWidth) * progress);
+    final x = -movingWidth + ((size.width + movingWidth) * progress);
 
-    final movingRect = Rect.fromLTWH(
-      x,
-      0,
-      movingWidth,
-      size.height,
-    );
+    final movingRect = Rect.fromLTWH(x, 0, movingWidth, size.height);
 
     final movingPaint = Paint()
       ..shader = const LinearGradient(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [
-          Color(0xFF35C98A),
-          Color(0xFFB9F8D9),
-          Color(0xFF35C98A),
-        ],
+        colors: [Color(0xFF35C98A), Color(0xFFB9F8D9), Color(0xFF35C98A)],
       ).createShader(movingRect);
 
     canvas.save();
 
     canvas.clipRRect(
-      RRect.fromRectAndRadius(
-        Offset.zero & size,
-        const Radius.circular(10),
-      ),
+      RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(10)),
     );
 
     canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        movingRect,
-        const Radius.circular(10),
-      ),
+      RRect.fromRectAndRadius(movingRect, const Radius.circular(10)),
       movingPaint,
     );
 
@@ -267,10 +232,7 @@ class _TopRightShapesPainter extends CustomPainter {
       ..lineTo(size.width * 0.58, size.height * 0.38)
       ..close();
 
-    canvas.drawPath(
-      p1,
-      Paint()..color = const Color(0xFF078C5B),
-    );
+    canvas.drawPath(p1, Paint()..color = const Color(0xFF078C5B));
 
     final p2 = Path()
       ..moveTo(size.width * 0.46, 0)
@@ -279,10 +241,7 @@ class _TopRightShapesPainter extends CustomPainter {
       ..lineTo(size.width * 0.74, size.height * 0.25)
       ..close();
 
-    canvas.drawPath(
-      p2,
-      Paint()..color = const Color(0xFF18B96D),
-    );
+    canvas.drawPath(p2, Paint()..color = const Color(0xFF18B96D));
 
     final p3 = Path()
       ..moveTo(size.width * 0.69, 0)
@@ -290,10 +249,7 @@ class _TopRightShapesPainter extends CustomPainter {
       ..lineTo(size.width, size.height * 0.28)
       ..close();
 
-    canvas.drawPath(
-      p3,
-      Paint()..color = const Color(0xFF35D77D),
-    );
+    canvas.drawPath(p3, Paint()..color = const Color(0xFF35D77D));
 
     final p4 = Path()
       ..moveTo(size.width * 0.34, 0)
@@ -302,10 +258,7 @@ class _TopRightShapesPainter extends CustomPainter {
       ..lineTo(size.width * 0.65, size.height * 0.18)
       ..close();
 
-    canvas.drawPath(
-      p4,
-      Paint()..color = const Color(0xFF06744F),
-    );
+    canvas.drawPath(p4, Paint()..color = const Color(0xFF06744F));
   }
 
   @override
@@ -328,10 +281,7 @@ class _BottomLeftShapesPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
 
-    canvas.drawPath(
-      p1,
-      Paint()..color = const Color(0xFF087852),
-    );
+    canvas.drawPath(p1, Paint()..color = const Color(0xFF087852));
 
     final p2 = Path()
       ..moveTo(0, size.height * 0.50)
@@ -340,10 +290,7 @@ class _BottomLeftShapesPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
 
-    canvas.drawPath(
-      p2,
-      Paint()..color = const Color(0xFF12AA67),
-    );
+    canvas.drawPath(p2, Paint()..color = const Color(0xFF12AA67));
 
     final p3 = Path()
       ..moveTo(0, size.height * 0.12)
@@ -352,10 +299,7 @@ class _BottomLeftShapesPainter extends CustomPainter {
       ..lineTo(0, size.height * 0.36)
       ..close();
 
-    canvas.drawPath(
-      p3,
-      Paint()..color = const Color(0xFF075D49),
-    );
+    canvas.drawPath(p3, Paint()..color = const Color(0xFF075D49));
 
     final p4 = Path()
       ..moveTo(0, size.height * 0.68)
@@ -364,10 +308,7 @@ class _BottomLeftShapesPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
 
-    canvas.drawPath(
-      p4,
-      Paint()..color = const Color(0xFF0A8C5B),
-    );
+    canvas.drawPath(p4, Paint()..color = const Color(0xFF0A8C5B));
   }
 
   @override
