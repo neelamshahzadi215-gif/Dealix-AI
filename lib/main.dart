@@ -1,3 +1,4 @@
+import 'package:dealix_ai/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 
@@ -14,7 +15,7 @@ class DealixAI extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Dealix AI',
       theme: AppTheme.lightTheme,
-      home: const Scaffold(body: Center(child: Text('Dealix AI'))),
+      home: const SplashScreen(body: Center(child: Text('Dealix AI'))),
     );
   }
 }
