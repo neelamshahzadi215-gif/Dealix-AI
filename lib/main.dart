@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/search/ai_scan_screen.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
   runApp(const DealixAIApp());
