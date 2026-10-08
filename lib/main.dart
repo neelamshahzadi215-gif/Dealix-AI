@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 
 void main() {
-  runApp(const DealixAI());
+  runApp(const DealixAIApp());
 }
 
-class DealixAI extends StatelessWidget {
-  const DealixAI({super.key});
+class DealixAIApp extends StatelessWidget {
+  const DealixAIApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Dealix AI',
-      theme: AppTheme.lightTheme,
-      home: const Scaffold(body: Center(child: Text('Dealix AI'))),
+      home: const AiScanScreen(),
     );
   }
 }
