@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.3.0
+  flutter_native_splash: ^2.4.8
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +64,7 @@ flutter:
     - assets/images/dealix_logo.svg
     - assets/images/dealix_logo_transparent.svg
     - assets/images/dealix_launcher.png
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -98,3 +100,14 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/images/dealix_launcher.png"
+
+flutter_native_splash:
+  color: "#0F766E"
+
+  android: true
+  ios: true
+
+  android_12:
+    color: "#0F766E"
+    image: assets/images/dealix_launcher.png
+    icon_background_color: "#0F766E"
