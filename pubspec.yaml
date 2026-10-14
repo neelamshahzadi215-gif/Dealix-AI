@@ -102,12 +102,12 @@ flutter_launcher_icons:
   image_path: "assets/images/dealix_launcher.png"
 
 flutter_native_splash:
-  color: "#0F766E"
+  color: "#F5F7F6"
+  image: assets/images/splash_logo.png
 
   android: true
   ios: true
 
   android_12:
-    color: "#0F766E"
-    image: assets/images/dealix_launcher.png
-    icon_background_color: "#0F766E"
+    color: "#F5F7F6"
+    image: assets/images/splash_logo_android12.png
