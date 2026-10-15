@@ -1,9 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+import '../../core/theme/app_colors.dart';
 import '../../models/product/product.dart';
 import '../../services/mock/mock_data_service.dart';
 
@@ -31,15 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _selectedIndex = 0;
 
-  static const Color deepGreen = Color(0xFF012A22);
-  static const Color deepGreen2 = Color(0xFF033D30);
-  static const Color buttonGreen = Color(0xFF079866);
-  static const Color lightGreen = Color(0xFF0BB77B);
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color darkText = Color(0xFF172033);
-  static const Color greyText = Color(0xFF64748B);
-  static const Color paleGreen = Color(0xFFEFFAF7);
-  static const Color borderGreen = Color(0xFFD7EEE7);
+  // App Theme Colors
+  static const Color deepGreen = AppColors.secondaryTeal;
+  static const Color deepGreen2 = AppColors.secondaryTeal;
+  static const Color buttonGreen = AppColors.primaryGreen;
+  static const Color lightGreen = AppColors.primaryGreen;
+  static const Color white = AppColors.white;
+  static const Color darkText = AppColors.textPrimary;
+  static const Color greyText = AppColors.textSecondary;
+  static const Color paleGreen = AppColors.softMint;
+  static const Color borderGreen = AppColors.border;
 
   @override
   void initState() {
@@ -193,9 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   separatorBuilder: (_, _) =>
                       const SizedBox(height: 12),
                   itemBuilder: (context, index) {
-                    return _productResultCard(
-                      products[index],
-                    );
+                    return _productResultCard(products[index]);
                   },
                 ),
               ),
@@ -212,9 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         color: paleGreen,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: borderGreen,
-        ),
+        border: Border.all(color: borderGreen),
       ),
       child: Row(
         children: [
@@ -336,26 +335,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       _recentSearches.removeWhere(
-        (item) =>
-            item.toLowerCase() ==
-            product.name.toLowerCase(),
+        (item) => item.toLowerCase() == product.name.toLowerCase(),
       );
 
-      _recentSearches.insert(
-        0,
-        product.name,
-      );
+      _recentSearches.insert(0, product.name);
 
       if (_recentSearches.length > 10) {
-        _recentSearches =
-            _recentSearches.take(10).toList();
+        _recentSearches = _recentSearches.take(10).toList();
       }
     });
 
-    _showSearchResults(
-      [product],
-      'Scanned Product',
-    );
+    _showSearchResults([product], 'Scanned Product');
   }
 
   // =========================================================
@@ -377,8 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final available = await _speechToText.initialize(
       onStatus: (status) {
-        if (status == 'done' ||
-            status == 'notListening') {
+        if (status == 'done' || status == 'notListening') {
           if (mounted) {
             setState(() {
               _isListening = false;
@@ -392,9 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _isListening = false;
           });
 
-          _message(
-            'Voice search error. Please try again.',
-          );
+          _message('Voice search error. Please try again.');
         }
       },
     );
@@ -418,8 +405,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onResult: (result) {
         if (!mounted) return;
 
-        final recognizedText =
-            result.recognizedWords.trim();
+        final recognizedText = result.recognizedWords.trim();
 
         if (recognizedText.isNotEmpty) {
           setState(() {
@@ -445,11 +431,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // =========================================================
 
   Future<void> _pasteLink() async {
-    final clipboardData =
-        await Clipboard.getData('text/plain');
-
-    final text =
-        clipboardData?.text?.trim() ?? '';
+    final clipboardData = await Clipboard.getData('text/plain');
+    final text = clipboardData?.text?.trim() ?? '';
 
     if (text.isEmpty) {
       _message('No link found in clipboard.');
@@ -459,19 +442,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final uri = Uri.tryParse(text);
 
     if (uri == null ||
-        !(uri.scheme == 'http' ||
-            uri.scheme == 'https')) {
+        !(uri.scheme == 'http' || uri.scheme == 'https')) {
       _searchController.text = text;
-
-      _message(
-        'Clipboard text is not a valid product link.',
-      );
-
+      _message('Clipboard text is not a valid product link.');
       return;
     }
 
     _searchController.text = text;
-
     _showLinkDialog(text);
   }
 
@@ -485,10 +462,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           title: const Row(
             children: [
-              Icon(
-                Icons.link_rounded,
-                color: buttonGreen,
-              ),
+              Icon(Icons.link_rounded, color: buttonGreen),
               SizedBox(width: 10),
               Text('Product Link'),
             ],
@@ -504,23 +478,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: const Text(
                 'Cancel',
-                style: TextStyle(
-                  color: greyText,
-                ),
+                style: TextStyle(color: greyText),
               ),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-
-                _message(
-                  'Product link received successfully.',
-                );
+                _message('Product link received successfully.');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: buttonGreen,
@@ -563,7 +530,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: const Text(
                 'View all',
                 style: TextStyle(
-                  color: lightGreen,
+                  color: AppColors.white,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                 ),
@@ -574,9 +541,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 10),
         ..._recentSearches.take(3).map(
           (search) => Padding(
-            padding: const EdgeInsets.only(
-              bottom: 9,
-            ),
+            padding: const EdgeInsets.only(bottom: 9),
             child: _recentCard(search),
           ),
         ),
@@ -606,8 +571,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 40,
               decoration: BoxDecoration(
                 color: paleGreen,
-                borderRadius:
-                    BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(11),
               ),
               child: const Icon(
                 Icons.history_rounded,
@@ -651,8 +615,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isScrollControlled: true,
       builder: (context) {
         return Container(
-          height:
-              MediaQuery.of(context).size.height * 0.65,
+          height: MediaQuery.of(context).size.height * 0.65,
           decoration: const BoxDecoration(
             color: white,
             borderRadius: BorderRadius.vertical(
@@ -662,23 +625,17 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               const SizedBox(height: 12),
-
               Container(
                 width: 42,
                 height: 5,
                 decoration: BoxDecoration(
                   color: Colors.black12,
-                  borderRadius:
-                      BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-
               const SizedBox(height: 18),
-
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
                     const Expanded(
@@ -696,7 +653,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         setState(() {
                           _recentSearches.clear();
                         });
-
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -710,46 +666,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 5),
-
               Expanded(
                 child: ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(
-                    20,
-                    8,
-                    20,
-                    24,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
                   itemCount: _recentSearches.length,
                   separatorBuilder: (_, _) =>
                       const SizedBox(height: 10),
                   itemBuilder: (context, index) {
-                    final search =
-                        _recentSearches[index];
+                    final search = _recentSearches[index];
 
                     return GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-
-                        _searchController.text =
-                            search;
-
+                        _searchController.text = search;
                         _search(search);
                       },
                       child: Container(
-                        padding:
-                            const EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 15,
                           vertical: 14,
                         ),
                         decoration: BoxDecoration(
                           color: paleGreen,
-                          borderRadius:
-                              BorderRadius.circular(16),
-                          border: Border.all(
-                            color: borderGreen,
-                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: borderGreen),
                         ),
                         child: Row(
                           children: [
@@ -758,10 +699,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 40,
                               decoration: BoxDecoration(
                                 color: white,
-                                borderRadius:
-                                    BorderRadius.circular(
-                                  12,
-                                ),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(
                                 Icons.history_rounded,
@@ -774,19 +712,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Text(
                                 search,
                                 maxLines: 1,
-                                overflow:
-                                    TextOverflow.ellipsis,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   color: darkText,
                                   fontSize: 14,
-                                  fontWeight:
-                                      FontWeight.w600,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
                             const Icon(
-                              Icons
-                                  .arrow_forward_ios_rounded,
+                              Icons.arrow_forward_ios_rounded,
                               color: greyText,
                               size: 15,
                             ),
@@ -856,41 +791,24 @@ class _HomeScreenState extends State<HomeScreen> {
         color: buttonGreen,
         onRefresh: _loadData,
         child: SingleChildScrollView(
-          physics:
-              const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(
-            20,
-            16,
-            20,
-            28,
-          ),
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _topBar(),
-
               const SizedBox(height: 28),
-
               _heading(),
-
               const SizedBox(height: 22),
-
               _searchBar(),
-
               const SizedBox(height: 14),
-
               _scanButton(),
-
               const SizedBox(height: 20),
-
               _quickActions(),
-
               if (_recentSearches.isNotEmpty) ...[
                 const SizedBox(height: 28),
                 _recentSection(),
               ],
-
               if (_loading) ...[
                 const SizedBox(height: 28),
                 const Center(
@@ -919,17 +837,14 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             color: white.withValues(alpha: 0.08),
-            borderRadius:
-                BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(11),
           ),
           child: SvgPicture.asset(
             'assets/images/dealix_logo_transparent.svg',
             fit: BoxFit.contain,
           ),
         ),
-
         const SizedBox(width: 8),
-
         const Expanded(
           child: Text(
             'Dealix AI',
@@ -940,7 +855,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-
         IconButton(
           onPressed: () {
             _message('No new notifications.');
@@ -962,8 +876,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _heading() {
     return const Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Smart Shopping',
@@ -1006,21 +919,18 @@ class _HomeScreenState extends State<HomeScreen> {
       height: 54,
       decoration: BoxDecoration(
         color: white,
-        borderRadius:
-            BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: TextField(
         controller: _searchController,
-        textInputAction:
-            TextInputAction.search,
+        textInputAction: TextInputAction.search,
         onSubmitted: (_) => _search(),
         style: const TextStyle(
           color: darkText,
           fontSize: 14,
         ),
         decoration: InputDecoration(
-          hintText:
-              'Search for a product, brand...',
+          hintText: 'Search for a product, brand...',
           hintStyle: const TextStyle(
             color: greyText,
             fontSize: 13,
@@ -1036,15 +946,12 @@ class _HomeScreenState extends State<HomeScreen> {
               _isListening
                   ? Icons.mic_rounded
                   : Icons.mic_none_rounded,
-              color: _isListening
-                  ? Colors.red
-                  : buttonGreen,
+              color: _isListening ? AppColors.error : buttonGreen,
               size: 21,
             ),
           ),
           border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(
+          contentPadding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 16,
           ),
@@ -1065,12 +972,10 @@ class _HomeScreenState extends State<HomeScreen> {
         height: 52,
         decoration: BoxDecoration(
           color: buttonGreen,
-          borderRadius:
-              BorderRadius.circular(17),
+          borderRadius: BorderRadius.circular(17),
         ),
         child: const Row(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.qr_code_scanner_rounded,
@@ -1106,9 +1011,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: _openBarcodeScanner,
           ),
         ),
-
         const SizedBox(width: 12),
-
         Expanded(
           child: _quickAction(
             icon: Icons.mic_none_rounded,
@@ -1116,9 +1019,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: _startVoiceSearch,
           ),
         ),
-
         const SizedBox(width: 12),
-
         Expanded(
           child: _quickAction(
             icon: Icons.link_rounded,
@@ -1144,8 +1045,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: double.infinity,
             decoration: BoxDecoration(
               color: white,
-              borderRadius:
-                  BorderRadius.circular(17),
+              borderRadius: BorderRadius.circular(17),
             ),
             child: Center(
               child: Container(
@@ -1153,8 +1053,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 38,
                 decoration: BoxDecoration(
                   color: paleGreen,
-                  borderRadius:
-                      BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(11),
                 ),
                 child: Icon(
                   icon,
@@ -1164,9 +1063,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-
           const SizedBox(height: 7),
-
           Text(
             title,
             textAlign: TextAlign.center,
@@ -1193,12 +1090,7 @@ class _HomeScreenState extends State<HomeScreen> {
           top: Radius.circular(24),
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(
-        8,
-        8,
-        8,
-        8,
-      ),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
       child: SafeArea(
         top: false,
         child: Row(
@@ -1208,25 +1100,21 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Home',
               index: 0,
             ),
-
             _navItem(
               icon: Icons.notifications_none_rounded,
               label: 'Alerts',
               index: 1,
             ),
-
             Expanded(
               child: GestureDetector(
                 onTap: _openBarcodeScanner,
                 child: Column(
-                  mainAxisSize:
-                      MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       width: 50,
                       height: 50,
-                      decoration:
-                          const BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: buttonGreen,
                         shape: BoxShape.circle,
                       ),
@@ -1249,13 +1137,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
             _navItem(
               icon: Icons.favorite_border_rounded,
               label: 'Saved',
               index: 2,
             ),
-
             _navItem(
               icon: Icons.person_outline_rounded,
               label: 'Profile',
@@ -1272,8 +1158,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String label,
     required int index,
   }) {
-    final selected =
-        _selectedIndex == index;
+    final selected = _selectedIndex == index;
 
     return Expanded(
       child: GestureDetector(
@@ -1283,33 +1168,25 @@ class _HomeScreenState extends State<HomeScreen> {
           });
 
           if (index != 0) {
-            _message(
-              '$label section coming soon.',
-            );
+            _message('$label section coming soon.');
           }
         },
         child: Column(
-          mainAxisSize:
-              MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
-              color: selected
-                  ? buttonGreen
-                  : greyText,
+              color: selected ? buttonGreen : greyText,
               size: 23,
             ),
             const SizedBox(height: 3),
             Text(
               label,
               style: TextStyle(
-                color: selected
-                    ? buttonGreen
-                    : greyText,
+                color: selected ? buttonGreen : greyText,
                 fontSize: 9.5,
-                fontWeight: selected
-                    ? FontWeight.w700
-                    : FontWeight.w500,
+                fontWeight:
+                    selected ? FontWeight.w700 : FontWeight.w500,
               ),
             ),
           ],
@@ -1323,37 +1200,28 @@ class _HomeScreenState extends State<HomeScreen> {
 // BARCODE SCANNER SCREEN
 // =============================================================
 
-class _BarcodeScannerScreen
-    extends StatefulWidget {
+class _BarcodeScannerScreen extends StatefulWidget {
   const _BarcodeScannerScreen();
 
   @override
-  State<_BarcodeScannerScreen>
-      createState() =>
-          _BarcodeScannerScreenState();
+  State<_BarcodeScannerScreen> createState() =>
+      _BarcodeScannerScreenState();
 }
 
 class _BarcodeScannerScreenState
     extends State<_BarcodeScannerScreen> {
   bool _hasScanned = false;
 
-  void _handleBarcode(
-    BarcodeCapture capture,
-  ) {
+  void _handleBarcode(BarcodeCapture capture) {
     if (_hasScanned) return;
 
-    for (final barcode
-        in capture.barcodes) {
+    for (final barcode in capture.barcodes) {
       final value = barcode.rawValue;
 
-      if (value != null &&
-          value.trim().isNotEmpty) {
+      if (value != null && value.trim().isNotEmpty) {
         _hasScanned = true;
 
-        Navigator.pop(
-          context,
-          value.trim(),
-        );
+        Navigator.pop(context, value.trim());
 
         return;
       }
@@ -1367,45 +1235,35 @@ class _BarcodeScannerScreenState
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: const Text(
-          'Scan Product',
-        ),
+        title: const Text('Scan Product'),
       ),
       body: Stack(
         children: [
           MobileScanner(
             onDetect: _handleBarcode,
           ),
-
           Center(
             child: Container(
               width: 280,
               height: 180,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.green,
+                  color: AppColors.primaryGreen,
                   width: 3,
                 ),
-                borderRadius:
-                    BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20),
               ),
             ),
           ),
-
           Positioned(
             left: 30,
             right: 30,
             bottom: 40,
             child: Container(
-              padding:
-                  const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color:
-                    Colors.black.withValues(
-                  alpha: 0.65,
-                ),
-                borderRadius:
-                    BorderRadius.circular(16),
+                color: Colors.black.withValues(alpha: 0.65),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: const Text(
                 'Place the barcode inside the box',
@@ -1413,8 +1271,7 @@ class _BarcodeScannerScreenState
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 15,
-                  fontWeight:
-                      FontWeight.w600,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
