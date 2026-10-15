@@ -67,7 +67,9 @@ flutter:
     - assets/images/google_g_logo.svg
     - assets/images/dealix_logo.svg
     - assets/images/dealix_launcher.png
-
+    - assets/images/splash_logo_android12.png
+    - assets/images/splash_logo.png
+    
 
   # To add assets to your application, add an assets section, like this:
   # assets:
