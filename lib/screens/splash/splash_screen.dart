@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/theme/app_colors.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -35,11 +38,11 @@ class _SplashScreenState extends State<SplashScreen>
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Color(0xFF00352D),
+        systemNavigationBarColor: AppColors.secondaryTeal,
         systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFF00352D),
+        backgroundColor: AppColors.secondaryTeal,
         body: LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
@@ -48,27 +51,22 @@ class _SplashScreenState extends State<SplashScreen>
             return Stack(
               fit: StackFit.expand,
               children: [
-                // ==========================================================
-                // MAIN BACKGROUND
-                // ==========================================================
-
-                const DecoratedBox(
+                // Main background using shared theme colors.
+                DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFF006653),
-                        Color(0xFF00483C),
-                        Color(0xFF00352D),
+                        AppColors.secondaryTeal,
+                        AppColors.secondaryTeal,
+                        AppColors.primaryGreen.withValues(alpha: 0.85),
                       ],
                     ),
                   ),
                 ),
 
-                // ==========================================================
-                // TOP RIGHT SHAPES
-                // ==========================================================
+                // Top-right decorative shapes.
                 Positioned(
                   top: 0,
                   right: 0,
@@ -78,9 +76,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
 
-                // ==========================================================
-                // BOTTOM LEFT SHAPES
-                // ==========================================================
+                // Bottom-left decorative shapes.
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -90,9 +86,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
 
-                // ==========================================================
-                // CENTER LOGO
-                // ==========================================================
+                // Center logo.
                 Positioned(
                   left: 0,
                   right: 0,
@@ -109,9 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
 
-                // ==========================================================
-                // MOVING LOADING INDICATOR
-                // ==========================================================
+                // Animated loading indicator.
                 Positioned(
                   left: 0,
                   right: 0,
@@ -134,10 +126,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-// ============================================================================
-// LOADING
-// ============================================================================
-
+// Loading section.
 class _LoadingSection extends StatelessWidget {
   final double progress;
 
@@ -154,12 +143,12 @@ class _LoadingSection extends StatelessWidget {
           child: CustomPaint(painter: _LoadingBarPainter(progress)),
         ),
         const SizedBox(height: 7),
-        const Text(
+        Text(
           'Loading...',
-          style: TextStyle(
-            color: Color(0xFFD1E8E1),
-            fontSize: 9,
-            letterSpacing: 0.25,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: AppColors.softMint,
+            fontSize: 10,
+            letterSpacing: 0.5,
           ),
         ),
       ],
@@ -167,10 +156,7 @@ class _LoadingSection extends StatelessWidget {
   }
 }
 
-// ============================================================================
-// MOVING LOADING BAR
-// ============================================================================
-
+// Animated loading bar.
 class _LoadingBarPainter extends CustomPainter {
   final double progress;
 
@@ -178,31 +164,31 @@ class _LoadingBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final backgroundPaint = Paint()..color = const Color(0xFF08715D);
+    final backgroundPaint = Paint()
+      ..color = AppColors.softMint.withValues(alpha: 0.25);
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(10)),
-      backgroundPaint,
-    );
+    final bounds = Offset.zero & size;
+    final borderRadius = BorderRadius.circular(10);
+
+    canvas.drawRRect(borderRadius.toRRect(bounds), backgroundPaint);
 
     const movingWidth = 42.0;
-
     final x = -movingWidth + ((size.width + movingWidth) * progress);
-
     final movingRect = Rect.fromLTWH(x, 0, movingWidth, size.height);
 
     final movingPaint = Paint()
-      ..shader = const LinearGradient(
+      ..shader = LinearGradient(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
-        colors: [Color(0xFF35C98A), Color(0xFFB9F8D9), Color(0xFF35C98A)],
+        colors: [
+          AppColors.primaryGreen,
+          AppColors.lightMint,
+          AppColors.primaryGreen,
+        ],
       ).createShader(movingRect);
 
     canvas.save();
-
-    canvas.clipRRect(
-      RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(10)),
-    );
+    canvas.clipRRect(borderRadius.toRRect(bounds));
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(movingRect, const Radius.circular(10)),
@@ -218,10 +204,7 @@ class _LoadingBarPainter extends CustomPainter {
   }
 }
 
-// ============================================================================
-// TOP RIGHT SHAPES
-// ============================================================================
-
+// Top-right decorative shapes.
 class _TopRightShapesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -232,7 +215,10 @@ class _TopRightShapesPainter extends CustomPainter {
       ..lineTo(size.width * 0.58, size.height * 0.38)
       ..close();
 
-    canvas.drawPath(p1, Paint()..color = const Color(0xFF078C5B));
+    canvas.drawPath(
+      p1,
+      Paint()..color = AppColors.primaryGreen.withValues(alpha: 0.30),
+    );
 
     final p2 = Path()
       ..moveTo(size.width * 0.46, 0)
@@ -241,7 +227,10 @@ class _TopRightShapesPainter extends CustomPainter {
       ..lineTo(size.width * 0.74, size.height * 0.25)
       ..close();
 
-    canvas.drawPath(p2, Paint()..color = const Color(0xFF18B96D));
+    canvas.drawPath(
+      p2,
+      Paint()..color = AppColors.primaryGreen.withValues(alpha: 0.45),
+    );
 
     final p3 = Path()
       ..moveTo(size.width * 0.69, 0)
@@ -249,7 +238,10 @@ class _TopRightShapesPainter extends CustomPainter {
       ..lineTo(size.width, size.height * 0.28)
       ..close();
 
-    canvas.drawPath(p3, Paint()..color = const Color(0xFF35D77D));
+    canvas.drawPath(
+      p3,
+      Paint()..color = AppColors.lightMint.withValues(alpha: 0.20),
+    );
 
     final p4 = Path()
       ..moveTo(size.width * 0.34, 0)
@@ -258,19 +250,19 @@ class _TopRightShapesPainter extends CustomPainter {
       ..lineTo(size.width * 0.65, size.height * 0.18)
       ..close();
 
-    canvas.drawPath(p4, Paint()..color = const Color(0xFF06744F));
+    canvas.drawPath(
+      p4,
+      Paint()..color = AppColors.secondaryTeal.withValues(alpha: 0.50),
+    );
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(covariant _TopRightShapesPainter oldDelegate) {
     return false;
   }
 }
 
-// ============================================================================
-// BOTTOM LEFT SHAPES
-// ============================================================================
-
+// Bottom-left decorative shapes.
 class _BottomLeftShapesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -281,7 +273,10 @@ class _BottomLeftShapesPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
 
-    canvas.drawPath(p1, Paint()..color = const Color(0xFF087852));
+    canvas.drawPath(
+      p1,
+      Paint()..color = AppColors.primaryGreen.withValues(alpha: 0.30),
+    );
 
     final p2 = Path()
       ..moveTo(0, size.height * 0.50)
@@ -290,7 +285,10 @@ class _BottomLeftShapesPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
 
-    canvas.drawPath(p2, Paint()..color = const Color(0xFF12AA67));
+    canvas.drawPath(
+      p2,
+      Paint()..color = AppColors.primaryGreen.withValues(alpha: 0.45),
+    );
 
     final p3 = Path()
       ..moveTo(0, size.height * 0.12)
@@ -299,7 +297,10 @@ class _BottomLeftShapesPainter extends CustomPainter {
       ..lineTo(0, size.height * 0.36)
       ..close();
 
-    canvas.drawPath(p3, Paint()..color = const Color(0xFF075D49));
+    canvas.drawPath(
+      p3,
+      Paint()..color = AppColors.secondaryTeal.withValues(alpha: 0.45),
+    );
 
     final p4 = Path()
       ..moveTo(0, size.height * 0.68)
@@ -308,11 +309,14 @@ class _BottomLeftShapesPainter extends CustomPainter {
       ..lineTo(0, size.height)
       ..close();
 
-    canvas.drawPath(p4, Paint()..color = const Color(0xFF0A8C5B));
+    canvas.drawPath(
+      p4,
+      Paint()..color = AppColors.lightMint.withValues(alpha: 0.15),
+    );
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(covariant _BottomLeftShapesPainter oldDelegate) {
     return false;
   }
 }
