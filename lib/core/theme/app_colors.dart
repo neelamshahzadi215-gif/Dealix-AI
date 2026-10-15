@@ -46,4 +46,6 @@ class AppColors {
   // Error
   // Error and invalid states
   static const Color error = Color(0xFFDC2626);
+
+  static const Color primaryButtonGreen = Color(0xFF078F70);
 }

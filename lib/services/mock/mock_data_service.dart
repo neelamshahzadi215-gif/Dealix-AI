@@ -16,6 +16,7 @@ class MockDataService {
         model: 'A55 5G',
         category: 'Smartphone',
         imageUrl: '',
+        barcode: '8806094881234',
         price: 124999,
         currency: 'PKR',
         rating: 4.5,
@@ -29,6 +30,7 @@ class MockDataService {
         model: 'AirPods Pro 2',
         category: 'Audio',
         imageUrl: '',
+        barcode: '194253765432',
         price: 64999,
         currency: 'PKR',
         rating: 4.7,
@@ -42,6 +44,7 @@ class MockDataService {
         model: 'Inspiron 15',
         category: 'Laptop',
         imageUrl: '',
+        barcode: '884116456789',
         price: 159999,
         currency: 'PKR',
         rating: 4.3,
@@ -118,7 +121,10 @@ class MockDataService {
           date: now.subtract(const Duration(days: 5)),
           price: 125999,
         ),
-        PriceHistoryPoint(date: now, price: 124999),
+        PriceHistoryPoint(
+          date: now,
+          price: 124999,
+        ),
       ],
     );
   }

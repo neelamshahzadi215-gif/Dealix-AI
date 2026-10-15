@@ -5,6 +5,7 @@ class Product {
   final String model;
   final String category;
   final String imageUrl;
+  final String barcode;
   final double price;
   final String currency;
   final double rating;
@@ -18,7 +19,8 @@ class Product {
     required this.model,
     required this.category,
     required this.imageUrl,
-    required this.price,
+    this.barcode = '',
+    this.price = 0,
     this.currency = 'PKR',
     this.rating = 0,
     this.reviewCount = 0,
