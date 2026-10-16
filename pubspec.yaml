@@ -34,10 +34,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  shared_preferences: ^2.5.3
   flutter_svg: ^2.3.0
-  mobile_scanner: ^7.4.2
-  speech_to_text: ^7.5.0
+  flutter_native_splash: ^2.4.8
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +47,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -64,6 +63,12 @@ flutter:
     - lib/core/Assets/logo.jpeg
     - assets/images/dealix_logo_transparent.svg
     - assets/images/google_g_logo.svg
+
+  assets:
+    - assets/images/dealix_logo.svg
+    - assets/images/dealix_logo_transparent.svg
+    - assets/images/dealix_launcher.png
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -95,3 +100,18 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/dealix_launcher.png"
+
+flutter_native_splash:
+  color: "#F5F7F6"
+  image: assets/images/splash_logo.png
+
+  android: true
+  ios: true
+
+  android_12:
+    color: "#F5F7F6"
+    image: assets/images/splash_logo_android12.png
