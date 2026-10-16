@@ -44,7 +44,7 @@ class ProductCard extends StatelessWidget {
                       ? Image.network(
                           product.imageUrl,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) {
+                          errorBuilder: (_, _, _) {
                             return const Icon(
                               Icons.shopping_bag_outlined,
                               color: AppColors.primaryGreen,
