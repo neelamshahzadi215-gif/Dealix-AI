@@ -8,7 +8,6 @@ import '../../models/product/product.dart';
 import '../../services/mock/mock_data_service.dart';
 import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
