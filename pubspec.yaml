@@ -36,6 +36,11 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.3.0
   flutter_native_splash: ^2.4.8
+  mobile_scanner: ^7.4.2
+  speech_to_text: ^7.5.0
+  photo_manager: ^3.12.0
+  image_picker: ^1.2.4
+  shared_preferences: ^2.5.6
 
 dev_dependencies:
   flutter_test:
@@ -63,8 +68,6 @@ flutter:
     - lib/core/Assets/logo.jpeg
     - assets/images/dealix_logo_transparent.svg
     - assets/images/google_g_logo.svg
-
-  assets:
     - assets/images/dealix_logo.svg
     - assets/images/dealix_logo_transparent.svg
     - assets/images/dealix_launcher.png

@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:dealix_ai/models/product/product.dart';
@@ -11,15 +10,14 @@ import '../../core/theme/app_colors.dart';
 import 'gallery_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({super.key, required String initialQuery});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final TextEditingController _searchController =
-      TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
 
   List<Product> _allProducts = [];
@@ -59,8 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     try {
       final products = await MockDataService().getProducts();
-      final recent =
-          await RecentSearchService().getRecentSearches();
+      final recent = await RecentSearchService().getRecentSearches();
 
       if (!mounted) return;
 
@@ -129,8 +126,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> _openProduct(Product product) async {
     try {
       await RecentSearchService().addRecentSearch(product);
-      final recent =
-          await RecentSearchService().getRecentSearches();
+      final recent = await RecentSearchService().getRecentSearches();
 
       if (!mounted) return;
 
@@ -138,9 +134,7 @@ class _SearchScreenState extends State<SearchScreen> {
         _recentSearches = recent;
       });
 
-      _showThemedMessage(
-        '${product.name} added to recent searches.',
-      );
+      _showThemedMessage('${product.name} added to recent searches.');
     } catch (_) {
       if (!mounted) return;
       _showThemedMessage('Could not update recent searches.');
@@ -181,9 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
     } catch (_) {
       if (!mounted) return;
 
-      _showThemedMessage(
-        'Unable to open camera. Please check permissions.',
-      );
+      _showThemedMessage('Unable to open camera. Please check permissions.');
     }
   }
 
@@ -191,9 +183,7 @@ class _SearchScreenState extends State<SearchScreen> {
     try {
       final image = await Navigator.push<File>(
         context,
-        MaterialPageRoute<File>(
-          builder: (context) => const GalleryScreen(),
-        ),
+        MaterialPageRoute<File>(builder: (context) => const GalleryScreen()),
       );
 
       if (!mounted || image == null) return;
@@ -206,9 +196,7 @@ class _SearchScreenState extends State<SearchScreen> {
     } catch (_) {
       if (!mounted) return;
 
-      _showThemedMessage(
-        'Unable to select image. Please try again.',
-      );
+      _showThemedMessage('Unable to select image. Please try again.');
     }
   }
 
@@ -265,9 +253,9 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
           ),
         ),
         if (actionText != null)
@@ -344,11 +332,7 @@ class _SearchScreenState extends State<SearchScreen> {
         height: 48,
         child: OutlinedButton.icon(
           onPressed: onPressed,
-          icon: Icon(
-            icon,
-            size: 19,
-            color: AppColors.secondaryTeal,
-          ),
+          icon: Icon(icon, size: 19, color: AppColors.secondaryTeal),
           label: Text(
             label,
             style: const TextStyle(
@@ -359,9 +343,7 @@ class _SearchScreenState extends State<SearchScreen> {
           style: OutlinedButton.styleFrom(
             backgroundColor: AppColors.white,
             foregroundColor: AppColors.secondaryTeal,
-            side: const BorderSide(
-              color: AppColors.border,
-            ),
+            side: const BorderSide(color: AppColors.border),
             elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
@@ -458,44 +440,46 @@ class _SearchScreenState extends State<SearchScreen> {
           onAction: _clearRecentSearches,
         ),
         const SizedBox(height: 4),
-        ..._recentSearches.take(3).map(
-          (product) => ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const CircleAvatar(
-              backgroundColor: AppColors.softMint,
-              child: Icon(
-                Icons.history_rounded,
-                color: AppColors.secondaryTeal,
+        ..._recentSearches
+            .take(3)
+            .map(
+              (product) => ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const CircleAvatar(
+                  backgroundColor: AppColors.softMint,
+                  child: Icon(
+                    Icons.history_rounded,
+                    color: AppColors.secondaryTeal,
+                  ),
+                ),
+                title: Text(
+                  product.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: Text(
+                  product.brand,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+                trailing: const Icon(
+                  Icons.north_west_rounded,
+                  size: 17,
+                  color: AppColors.textSecondary,
+                ),
+                onTap: () {
+                  _searchController.text = product.name;
+                  _searchProducts(product.name);
+                  FocusScope.of(context).unfocus();
+                },
               ),
             ),
-            title: Text(
-              product.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            subtitle: Text(
-              product.brand,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 12,
-              ),
-            ),
-            trailing: const Icon(
-              Icons.north_west_rounded,
-              size: 17,
-              color: AppColors.textSecondary,
-            ),
-            onTap: () {
-              _searchController.text = product.name;
-              _searchProducts(product.name);
-              FocusScope.of(context).unfocus();
-            },
-          ),
-        ),
         const SizedBox(height: 12),
       ],
     );
@@ -630,9 +614,7 @@ class _SearchScreenState extends State<SearchScreen> {
       return const Padding(
         padding: EdgeInsets.all(40),
         child: Center(
-          child: CircularProgressIndicator(
-            color: AppColors.secondaryTeal,
-          ),
+          child: CircularProgressIndicator(color: AppColors.secondaryTeal),
         ),
       );
     }
@@ -695,18 +677,14 @@ class _SearchScreenState extends State<SearchScreen> {
               const Text(
                 'Try another product name or brand.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                ),
+                style: TextStyle(color: AppColors.textSecondary),
               ),
               const SizedBox(height: 12),
               TextButton(
                 onPressed: _clearSearch,
                 child: const Text(
                   'Clear Search',
-                  style: TextStyle(
-                    color: AppColors.secondaryTeal,
-                  ),
+                  style: TextStyle(color: AppColors.secondaryTeal),
                 ),
               ),
             ],
@@ -798,9 +776,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 label,
                 style: TextStyle(
                   fontSize: 10,
-                  fontWeight: selected
-                      ? FontWeight.w700
-                      : FontWeight.w500,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   color: selected
                       ? AppColors.secondaryTeal
                       : AppColors.textSecondary,
@@ -820,9 +796,7 @@ class _SearchScreenState extends State<SearchScreen> {
         padding: const EdgeInsets.fromLTRB(8, 9, 8, 7),
         decoration: BoxDecoration(
           color: AppColors.white,
-          border: const Border(
-            top: BorderSide(color: AppColors.border),
-          ),
+          border: const Border(top: BorderSide(color: AppColors.border)),
           boxShadow: [
             BoxShadow(
               color: AppColors.textPrimary.withValues(alpha: 0.04),
@@ -915,9 +889,9 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       backgroundColor: AppColors.appBackground,
       appBar: AppBar(
-        backgroundColor: AppColors.secondaryTeal,
+        backgroundColor: const Color(0xFF012A22),
         foregroundColor: AppColors.white,
-        surfaceTintColor: AppColors.secondaryTeal,
+        surfaceTintColor: const Color(0xFF012A22),
         elevation: 0,
         titleSpacing: 20,
         title: const Column(
@@ -951,9 +925,15 @@ class _SearchScreenState extends State<SearchScreen> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              // Teal background search section.
+              // Home Screen jaisa dark green gradient.
               Container(
-                color: AppColors.secondaryTeal,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF012A22), Color(0xFF033D30)],
+                  ),
+                ),
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

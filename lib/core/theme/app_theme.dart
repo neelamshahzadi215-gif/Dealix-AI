@@ -9,15 +9,12 @@ class AppTheme {
   static const double mediumRadius = 12.0;
   static const double largeRadius = 16.0;
 
-  // App Theme
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-
-    // Font
     fontFamily: 'Inter',
 
-    // Background
+    // Default background for all screens except custom sections
     scaffoldBackgroundColor: AppColors.appBackground,
 
     // Color Scheme
@@ -45,63 +42,54 @@ class AppTheme {
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
-
       headlineMedium: TextStyle(
         fontFamily: 'Inter',
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
-
       headlineSmall: TextStyle(
         fontFamily: 'Inter',
         fontSize: 18,
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
-
       titleLarge: TextStyle(
         fontFamily: 'Inter',
         fontSize: 20,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       ),
-
       titleMedium: TextStyle(
         fontFamily: 'Inter',
         fontSize: 16,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       ),
-
       titleSmall: TextStyle(
         fontFamily: 'Inter',
         fontSize: 14,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       ),
-
       bodyLarge: TextStyle(
         fontFamily: 'Inter',
         fontSize: 16,
         fontWeight: FontWeight.normal,
         color: AppColors.textPrimary,
       ),
-
       bodyMedium: TextStyle(
         fontFamily: 'Inter',
         fontSize: 14,
         fontWeight: FontWeight.normal,
         color: AppColors.textSecondary,
       ),
-
       bodySmall: TextStyle(
         fontFamily: 'Inter',
         fontSize: 12,
         fontWeight: FontWeight.normal,
         color: AppColors.textSecondary,
       ),
-
       labelLarge: TextStyle(
         fontFamily: 'Inter',
         fontSize: 16,
@@ -110,10 +98,10 @@ class AppTheme {
       ),
     ),
 
-    // Primary Button
+    // Primary Buttons: Login, Sign Up, Create Account
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.secondaryTeal,
         foregroundColor: AppColors.white,
         minimumSize: const Size(double.infinity, 50),
         elevation: 0,
@@ -128,7 +116,7 @@ class AppTheme {
       ),
     ),
 
-    // Secondary / Outline Button
+    // Secondary / Outline Buttons
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.secondaryTeal,
@@ -145,57 +133,55 @@ class AppTheme {
       ),
     ),
 
-    // Text Field / Input
+    // Text Buttons
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: AppColors.secondaryTeal,
+        textStyle: const TextStyle(
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+
+    // Text Fields / Inputs
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColors.lightMint,
-
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-
       hintStyle: const TextStyle(
         fontFamily: 'Inter',
         fontSize: 14,
         color: AppColors.textSecondary,
       ),
-
       labelStyle: const TextStyle(
         fontFamily: 'Inter',
         fontSize: 14,
         color: AppColors.textSecondary,
       ),
-
-      // Normal Border
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(mediumRadius),
         borderSide: const BorderSide(color: AppColors.border),
       ),
-
-      // Enabled Border
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(mediumRadius),
         borderSide: const BorderSide(color: AppColors.border),
       ),
-
-      // Focused Border
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(mediumRadius),
         borderSide: const BorderSide(color: AppColors.primaryGreen, width: 2),
       ),
-
-      // Error Border
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(mediumRadius),
         borderSide: const BorderSide(color: AppColors.error),
       ),
-
-      // Focused Error Border
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(mediumRadius),
         borderSide: const BorderSide(color: AppColors.error, width: 2),
       ),
     ),
 
-    // Card
+    // Cards
     cardTheme: CardThemeData(
       color: AppColors.white,
       elevation: 1,

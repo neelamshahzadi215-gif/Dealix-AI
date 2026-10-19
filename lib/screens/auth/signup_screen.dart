@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_theme.dart';
 import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -12,6 +13,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -46,54 +48,17 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  InputDecoration _inputDecoration({
-    required String hint,
-    required IconData icon,
-    Widget? suffixIcon,
-  }) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: const TextStyle(
-        color: AppColors.textSecondary,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-      ),
-      prefixIcon: Icon(icon, color: AppColors.textSecondary, size: 18),
-      suffixIcon: suffixIcon,
-      filled: true,
-      fillColor: AppColors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: AppColors.border),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: AppColors.border),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: AppColors.primaryGreen, width: 1.5),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: AppColors.error),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(color: AppColors.error, width: 1.5),
-      ),
-    );
-  }
-
   String? _validateEmail(String? value) {
     final email = value?.trim() ?? '';
+
     if (email.isEmpty) {
       return 'Please enter your email address.';
     }
+
     if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
       return 'Enter a valid email address.';
     }
+
     return null;
   }
 
@@ -113,19 +78,20 @@ class _SignupScreenState extends State<SignupScreen> {
       validator: validator,
       onFieldSubmitted: onFieldSubmitted,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
-      decoration: _inputDecoration(
-        hint: hint,
-        icon: Icons.lock_outline_rounded,
+      style: Theme.of(context).textTheme.bodyLarge,
+      decoration: InputDecoration(
+        hintText: hint,
+        prefixIcon: const Icon(
+          Icons.lock_outline_rounded,
+          color: AppColors.textSecondary,
+        ),
         suffixIcon: IconButton(
           tooltip: obscureText ? 'Show $hint' : 'Hide $hint',
-          splashRadius: 18,
           onPressed: onToggleVisibility,
           icon: Icon(
             obscureText
                 ? Icons.visibility_outlined
                 : Icons.visibility_off_outlined,
-            size: 18,
             color: AppColors.textSecondary,
           ),
         ),
@@ -136,7 +102,6 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.appBackground,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -159,54 +124,54 @@ class _SignupScreenState extends State<SignupScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Center(
-                            child: Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: AppColors.secondaryTeal,
-                                borderRadius: BorderRadius.circular(13),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primaryGreen.withValues(
-                                      alpha: 0.15,
-                                    ),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.mediumRadius,
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(13),
-                                child: Image.asset(
-                                  'lib/core/Assets/logo.jpeg',
-                                  width: 48,
-                                  height: 48,
-                                  fit: BoxFit.cover,
-                                ),
+                              child: Image.asset(
+                                'lib/core/Assets/logo.jpeg',
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.secondaryTeal,
+                                      borderRadius: BorderRadius.circular(
+                                        AppTheme.mediumRadius,
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      Icons.shopping_bag_outlined,
+                                      color: AppColors.white,
+                                      size: 28,
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ),
+
                           const SizedBox(height: 14),
-                          const Text(
+
+                          Text(
                             'Create your account',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.5,
-                            ),
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
+
                           const SizedBox(height: 5),
-                          const Text(
+
+                          Text(
                             'Sign up to find the best deals for you',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 11.5,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
+
                           const SizedBox(height: 24),
+
                           TextFormField(
                             controller: _nameController,
                             keyboardType: TextInputType.name,
@@ -214,13 +179,13 @@ class _SignupScreenState extends State<SignupScreen> {
                             textInputAction: TextInputAction.next,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 14,
-                            ),
-                            decoration: _inputDecoration(
-                              hint: 'Full Name',
-                              icon: Icons.person_outline_rounded,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            decoration: const InputDecoration(
+                              hintText: 'Full Name',
+                              prefixIcon: Icon(
+                                Icons.person_outline_rounded,
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
@@ -229,7 +194,9 @@ class _SignupScreenState extends State<SignupScreen> {
                               return null;
                             },
                           ),
+
                           const SizedBox(height: 12),
+
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -237,17 +204,19 @@ class _SignupScreenState extends State<SignupScreen> {
                             autofillHints: const [AutofillHints.email],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 14,
-                            ),
-                            decoration: _inputDecoration(
-                              hint: 'Email Address',
-                              icon: Icons.email_outlined,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            decoration: const InputDecoration(
+                              hintText: 'Email Address',
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                             validator: _validateEmail,
                           ),
+
                           const SizedBox(height: 12),
+
                           _buildPasswordField(
                             hint: 'Password',
                             controller: _passwordController,
@@ -261,13 +230,17 @@ class _SignupScreenState extends State<SignupScreen> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a password.';
                               }
+
                               if (value.length < 8) {
                                 return 'Password must be at least 8 characters.';
                               }
+
                               return null;
                             },
                           ),
+
                           const SizedBox(height: 12),
+
                           _buildPasswordField(
                             hint: 'Confirm Password',
                             controller: _confirmPasswordController,
@@ -284,50 +257,37 @@ class _SignupScreenState extends State<SignupScreen> {
                               if (value == null || value.isEmpty) {
                                 return 'Please confirm your password.';
                               }
+
                               if (value != _passwordController.text) {
                                 return 'Passwords do not match.';
                               }
+
                               return null;
                             },
                           ),
+
                           const SizedBox(height: 20),
+
                           SizedBox(
-                            height: 48,
+                            height: 50,
                             child: ElevatedButton(
                               onPressed: _createAccount,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primaryButtonGreen,
-                                foregroundColor: AppColors.white,
-                                elevation: 2,
-                                shadowColor: AppColors.primaryGreen.withValues(
-                                  alpha: 0.2,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(13),
-                                ),
-                              ),
-                              child: const Text(
-                                'Create Account',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
+                              child: const Text('Create Account'),
                             ),
                           ),
+
                           const SizedBox(height: 22),
+
                           Center(
                             child: Wrap(
                               alignment: WrapAlignment.center,
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
-                                const Text(
+                                Text(
                                   'Already have an account? ',
-                                  style: TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 12,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
+
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).push(
@@ -337,17 +297,21 @@ class _SignupScreenState extends State<SignupScreen> {
                                     );
                                   },
                                   style: TextButton.styleFrom(
-                                    foregroundColor: const Color(0xFF078F70),
+                                    foregroundColor: AppColors.secondaryTeal,
                                     padding: EdgeInsets.zero,
                                     minimumSize: Size.zero,
                                     tapTargetSize:
                                         MaterialTapTargetSize.shrinkWrap,
-                                    textStyle: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                    ),
                                   ),
-                                  child: const Text('Login'),
+                                  child: Text(
+                                    'Login',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          color: AppColors.secondaryTeal,
+                                        ),
+                                  ),
                                 ),
                               ],
                             ),

@@ -1,3 +1,4 @@
+import 'package:dealix_ai/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,6 +24,12 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..repeat();
+
+    Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacementNamed(AppRouter.login);
+    });
   }
 
   @override
@@ -33,16 +40,18 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
+      value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: AppColors.secondaryTeal,
+        systemNavigationBarColor: AppColors.darkGreenTeal,
         systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: AppColors.secondaryTeal,
+        backgroundColor: AppColors.darkGreenTeal,
         body: LayoutBuilder(
           builder: (context, constraints) {
             final width = constraints.maxWidth;
@@ -51,16 +60,16 @@ class _SplashScreenState extends State<SplashScreen>
             return Stack(
               fit: StackFit.expand,
               children: [
-                // Main background using shared theme colors.
+                // Dark green-teal gradient.
                 DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
+                        AppColors.darkGreenTeal,
+                        AppColors.deepGreen,
                         AppColors.secondaryTeal,
-                        AppColors.secondaryTeal,
-                        AppColors.primaryGreen.withValues(alpha: 0.85),
                       ],
                     ),
                   ),
@@ -134,6 +143,8 @@ class _LoadingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -145,7 +156,7 @@ class _LoadingSection extends StatelessWidget {
         const SizedBox(height: 7),
         Text(
           'Loading...',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          style: theme.textTheme.bodySmall?.copyWith(
             color: AppColors.softMint,
             fontSize: 10,
             letterSpacing: 0.5,
@@ -174,6 +185,7 @@ class _LoadingBarPainter extends CustomPainter {
 
     const movingWidth = 42.0;
     final x = -movingWidth + ((size.width + movingWidth) * progress);
+
     final movingRect = Rect.fromLTWH(x, 0, movingWidth, size.height);
 
     final movingPaint = Paint()
