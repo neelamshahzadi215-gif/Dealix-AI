@@ -3,49 +3,28 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  // Primary Green
-  // Primary buttons, active controls, best-price states
+  // Brand Colors
   static const Color primaryGreen = Color(0xFF16A34A);
+  static const Color secondaryTeal = Color(0xFF078F70);
 
-  // Secondary Teal
-  // Secondary actions and brand accents
-  static const Color secondaryTeal = Color(0xFF0F766E);
-
-  // Soft Mint
-  // Cover, document sections and marketing backgrounds
-  static const Color softMint = Color(0xFFECFDF5);
-
-  // App Background
-  // Main background of all app screens
+  // Dark Green-Teal Splash Colors
+  static const Color darkGreenTeal = Color(0xFF012A22);
+  static const Color deepGreen = Color(0xFF033D30);
+  // Background Colors
   static const Color appBackground = Color(0xFFF8FAFC);
-
-  // Light Mint
-  // Search/input and soft highlight areas
+  static const Color softMint = Color(0xFFECFDF5);
   static const Color lightMint = Color(0xFFF0FDFA);
-
-  // White
-  // Cards and clean content areas
   static const Color white = Color(0xFFFFFFFF);
 
-  // Text
-  // Main headings and important information
+  // Text Colors
   static const Color textPrimary = Color(0xFF172033);
-
-  // Secondary Text
-  // Descriptions and helper text
   static const Color textSecondary = Color(0xFF64748B);
 
-  // Border
-  // Light card/input borders
+  // UI Colors
   static const Color border = Color(0xFFD1FAE5);
-
-  // Accent
-  // Deal/attention highlights
   static const Color accent = Color(0xFFF59E0B);
-
-  // Error
-  // Error and invalid states
   static const Color error = Color(0xFFDC2626);
 
+  // Main Action Button Color
   static const Color primaryButtonGreen = Color(0xFF078F70);
 }

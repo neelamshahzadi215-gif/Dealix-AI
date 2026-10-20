@@ -26,8 +26,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   Future<void> _loadGallery() async {
     try {
-      final permission =
-          await PhotoManager.requestPermissionExtend();
+      final permission = await PhotoManager.requestPermissionExtend();
 
       if (!permission.isAuth && !permission.hasAccess) {
         if (!mounted) return;
@@ -47,10 +46,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       List<AssetEntity> loadedImages = [];
 
       if (albums.isNotEmpty) {
-        loadedImages = await albums.first.getAssetListPaged(
-          page: 0,
-          size: 200,
-        );
+        loadedImages = await albums.first.getAssetListPaged(page: 0, size: 200);
       }
 
       if (!mounted) return;
@@ -90,12 +86,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
     return Scaffold(
       backgroundColor: AppColors.appBackground,
       appBar: AppBar(
-  title: const Text('Choose Photo'),
-  backgroundColor: AppColors.white,
-  foregroundColor: AppColors.textPrimary,
-  surfaceTintColor: Colors.transparent,
-  elevation: 0,
-),
+        title: const Text('Choose Photo'),
+        backgroundColor: AppColors.white,
+        foregroundColor: AppColors.textPrimary,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,18 +102,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: AppColors.softMint,
-                borderRadius: BorderRadius.circular(
-                  AppTheme.largeRadius,
-                ),
-                border: Border.all(
-                  color: AppColors.border,
-                ),
+                borderRadius: BorderRadius.circular(AppTheme.largeRadius),
+                border: Border.all(color: AppColors.border),
               ),
               child: Row(
                 children: [
                   const Icon(
                     Icons.photo_library_rounded,
-                    color: AppColors.primaryGreen,
+                    color: AppColors.secondaryTeal,
                     size: 32,
                   ),
                   const SizedBox(width: 12),
@@ -127,16 +119,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
                       children: [
                         Text(
                           'Your Gallery',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Select a product photo to search',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
                     ),
@@ -145,18 +133,14 @@ class _GalleryScreenState extends State<GalleryScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Recent Photos',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             const SizedBox(height: 12),
-            Expanded(
-              child: _buildGalleryContent(),
-            ),
+            Expanded(child: _buildGalleryContent()),
           ],
         ),
       ),
@@ -165,9 +149,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   Widget _buildGalleryContent() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (!_hasPermission) {
@@ -196,9 +178,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
               const SizedBox(height: 16),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-    backgroundColor: AppColors.primaryGreen,
-    foregroundColor: AppColors.white,
-  ),
+                  backgroundColor: AppColors.secondaryTeal,
+                  foregroundColor: AppColors.white,
+                ),
                 onPressed: () async {
                   await PhotoManager.openSetting();
                 },
@@ -253,9 +235,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
         return GestureDetector(
           onTap: () => _selectImage(image),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(
-              AppTheme.smallRadius,
-            ),
+            borderRadius: BorderRadius.circular(AppTheme.smallRadius),
             child: Container(
               color: AppColors.lightMint,
               child: FutureBuilder<Uint8List?>(
@@ -263,11 +243,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
                   const ThumbnailSize(300, 300),
                 ),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
                   }
 
                   final bytes = snapshot.data;
