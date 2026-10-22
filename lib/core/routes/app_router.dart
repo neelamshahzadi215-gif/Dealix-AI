@@ -6,6 +6,7 @@ import '../../screens/auth/signup_screen.dart';
 import '../../screens/home/home_screen.dart';
 import '../../screens/search/search_screen.dart';
 import '../../screens/search/gallery_screen.dart';
+import '../../screens/search/ai_scan_screen.dart';
 import '../../screens/analysis/ai_analysis_screen.dart';
 
 class AppRouter {
@@ -17,6 +18,7 @@ class AppRouter {
   static const String home = '/home';
   static const String search = '/search';
   static const String gallery = '/gallery';
+  static const String aiScan = '/ai-scan';
   static const String analysis = '/analysis';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -58,6 +60,12 @@ class AppRouter {
           settings: settings,
           builder: (_) => const GalleryScreen(),
         );
+
+      case aiScan:
+       return MaterialPageRoute(
+           settings: settings,
+           builder: (_) => const AiScanScreen(),
+  );
 
       case analysis:
         return MaterialPageRoute(

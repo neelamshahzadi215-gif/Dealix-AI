@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import '../../core/routes/app_router.dart';
 import 'package:dealix_ai/models/product/product.dart';
 import 'package:dealix_ai/services/mock/mock_data_service.dart';
 import 'package:dealix_ai/services/mock/recent_search_service.dart';
@@ -825,7 +826,9 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             Expanded(
               child: InkWell(
-                onTap: _pickCameraImage,
+                onTap: () {
+  Navigator.pushNamed(context, AppRouter.aiScan);
+},
                 borderRadius: BorderRadius.circular(16),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 2),

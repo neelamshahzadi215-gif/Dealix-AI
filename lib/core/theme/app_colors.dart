@@ -27,4 +27,5 @@ class AppColors {
 
   // Main Action Button Color
   static const Color primaryButtonGreen = Color(0xFF078F70);
+
 }
