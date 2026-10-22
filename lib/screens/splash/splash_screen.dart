@@ -1,3 +1,5 @@
+
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dealix_ai/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,21 +18,41 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _loadingController;
 
-  @override
-  void initState() {
-    super.initState();
+ 
+@override
+void initState() {
+  super.initState();
 
-    _loadingController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat();
+  _loadingController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  )..repeat();
 
-    Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) return;
+  _handleStartupNavigation();
+}
 
-      Navigator.of(context).pushReplacementNamed(AppRouter.login);
-    });
+Future<void> _handleStartupNavigation() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  final bool restoreAiScan =
+      prefs.getBool('restore_ai_scan_after_camera') ?? false;
+
+  if (restoreAiScan) {
+    await prefs.remove('restore_ai_scan_after_camera');
+
+    if (!mounted) return;
+
+    Navigator.of(context).pushReplacementNamed(AppRouter.aiScan);
+    return;
   }
+
+  await Future.delayed(const Duration(seconds: 3));
+
+  if (!mounted) return;
+
+  Navigator.of(context).pushReplacementNamed(AppRouter.login);
+}
+
 
   @override
   void dispose() {
