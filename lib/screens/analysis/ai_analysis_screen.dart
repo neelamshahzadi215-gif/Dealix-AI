@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/product/product.dart';
@@ -22,7 +20,6 @@ class _AiAnalysisScreenState extends State<AiAnalysisScreen> {
 
   int _currentStep = 0;
   bool _isLoading = true;
-  bool _isConfirmed = false;
   bool _hasError = false;
 
   final List<String> _steps = const [
@@ -45,7 +42,6 @@ class _AiAnalysisScreenState extends State<AiAnalysisScreen> {
       _product = null;
       _currentStep = 0;
       _isLoading = true;
-      _isConfirmed = false;
       _hasError = false;
     });
 
@@ -62,7 +58,7 @@ class _AiAnalysisScreenState extends State<AiAnalysisScreen> {
         return;
       }
 
-      // Use existing product from MockDataService.
+      // Use an existing product from MockDataService.
       final product = products.firstWhere(
         (item) => item.id == 'p2',
         orElse: () => products.first,
@@ -102,14 +98,15 @@ class _AiAnalysisScreenState extends State<AiAnalysisScreen> {
     }
   }
 
+  // Updated: pass the selected product to Comparison Screen.
   void _confirmProduct() {
-    setState(() {
-      _isConfirmed = true;
-    });
+    final product = _product;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Product confirmed successfully.')),
-    );
+    if (product == null || _isLoading) {
+      return;
+    }
+
+    Navigator.pushNamed(context, '/comparison', arguments: product);
   }
 
   @override
@@ -181,7 +178,6 @@ class _AiAnalysisScreenState extends State<AiAnalysisScreen> {
   Widget _buildAnalysisHeader() {
     return Column(
       children: [
-        // AI Analysis Icon
         Container(
           width: 108,
           height: 108,
@@ -213,25 +209,15 @@ class _AiAnalysisScreenState extends State<AiAnalysisScreen> {
             ),
           ),
         ),
-
         const SizedBox(height: 18),
-
         Text(
-          _isConfirmed
-              ? 'Product Confirmed'
-              : _isLoading
-              ? 'Analyzing Your Product'
-              : 'Analysis Complete',
+          _isLoading ? 'Analyzing Your Product' : 'Analysis Complete',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
-
         const SizedBox(height: 8),
-
         Text(
-          _isConfirmed
-              ? 'Your product identification has been confirmed.'
-              : _isLoading
+          _isLoading
               ? 'AI is identifying your product and checking available information.'
               : 'AI has finished identifying your product.',
           textAlign: TextAlign.center,
@@ -490,32 +476,6 @@ class _AiAnalysisScreenState extends State<AiAnalysisScreen> {
   Widget _buildActionButtons() {
     if (_isLoading || _product == null) {
       return const SizedBox.shrink();
-    }
-
-    if (_isConfirmed) {
-      return Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.softMint,
-          borderRadius: BorderRadius.circular(AppTheme.mediumRadius),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: const Row(
-          children: [
-            Icon(Icons.check_circle_rounded, color: AppColors.primaryGreen),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Product identification confirmed.',
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
     }
 
     return Column(
