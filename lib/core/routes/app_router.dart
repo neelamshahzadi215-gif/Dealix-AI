@@ -1,3 +1,4 @@
+import 'package:dealix_ai/models/product/product.dart';
 import 'package:flutter/material.dart';
 
 import '../../screens/splash/splash_screen.dart';
@@ -8,6 +9,7 @@ import '../../screens/search/search_screen.dart';
 import '../../screens/search/gallery_screen.dart';
 import '../../screens/search/ai_scan_screen.dart';
 import '../../screens/analysis/ai_analysis_screen.dart';
+import '../../screens/comparison/comparison_screen.dart';
 
 class AppRouter {
   AppRouter._();
@@ -20,6 +22,7 @@ class AppRouter {
   static const String gallery = '/gallery';
   static const String aiScan = '/ai-scan';
   static const String analysis = '/analysis';
+  static const String comparison = '/comparison';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -62,10 +65,10 @@ class AppRouter {
         );
 
       case aiScan:
-       return MaterialPageRoute(
-           settings: settings,
-           builder: (_) => const AiScanScreen(),
-  );
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const AiScanScreen(),
+        );
 
       case analysis:
         return MaterialPageRoute(
@@ -73,8 +76,28 @@ class AppRouter {
           builder: (_) => const AiAnalysisScreen(),
         );
 
+      case comparison:
+        final product = settings.arguments;
+
+        if (product is! Product) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => const Scaffold(
+              body: Center(
+                child: Text('A valid product is required for comparison.'),
+              ),
+            ),
+          );
+        }
+
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => ComparisonScreen(product: product),
+        );
+
       default:
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) =>
               const Scaffold(body: Center(child: Text('Page not found'))),
         );
