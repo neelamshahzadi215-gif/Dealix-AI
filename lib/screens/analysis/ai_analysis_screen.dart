@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/product/product.dart';
@@ -102,13 +103,16 @@ class _AiAnalysisScreenState extends State<AiAnalysisScreen> {
     }
   }
 
+  // Navigate to Comparison Screen after confirming the product.
   void _confirmProduct() {
-    setState(() {
-      _isConfirmed = true;
-    });
+    final product = _product;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Product confirmed successfully.')),
+    if (product == null) return;
+
+    Navigator.pushReplacementNamed(
+      context,
+      AppRouter.comparison,
+      arguments: product,
     );
   }
 
