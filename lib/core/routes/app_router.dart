@@ -62,10 +62,10 @@ class AppRouter {
         );
 
       case aiScan:
-       return MaterialPageRoute(
-           settings: settings,
-           builder: (_) => const AiScanScreen(),
-  );
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const AiScanScreen(),
+        );
 
       case analysis:
         return MaterialPageRoute(
@@ -76,7 +76,7 @@ class AppRouter {
       default:
         return MaterialPageRoute(
           builder: (_) =>
-              const Scaffold(body: Center(child: Text('Page not found'))),
+          const Scaffold(body: Center(child: Text('Page not found'))),
         );
     }
   }
