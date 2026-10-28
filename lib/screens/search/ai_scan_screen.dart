@@ -1,5 +1,4 @@
-﻿
-// ignore_for_file: unused_field
+﻿// ignore_for_file: unused_field
 
 import 'dart:io';
 
@@ -11,7 +10,8 @@ import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/product/product.dart';
-
+import '../../services/guest_usage_session.dart';
+import '../../widgets/common/account_required_dialog.dart';
 
 class AiScanScreen extends StatefulWidget {
   const AiScanScreen({super.key});
@@ -25,7 +25,6 @@ class _AiScanScreenState extends State<AiScanScreen> {
       TextEditingController();
 
   final ImagePicker _imagePicker = ImagePicker();
- 
 
   File? _selectedImage;
   List<Product> _results = [];
@@ -210,6 +209,11 @@ final bool _isLoading = false;
       _showMessage(
         'Product name, photo ya details mein se kuch add karein.',
       );
+      return;
+    }
+
+    if (!GuestUsageSession.instance.tryUseSearch()) {
+      await showAccountRequiredDialog(context);
       return;
     }
 

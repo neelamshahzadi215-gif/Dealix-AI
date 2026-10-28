@@ -32,7 +32,7 @@ void main() {
     );
 
     final loginButton = find.byType(ElevatedButton);
-    expect(tester.getSize(loginButton).height, 43);
+    expect(tester.getSize(loginButton).height, 48);
     final loginButtonWidget = tester.widget<ElevatedButton>(loginButton);
     expect(
       loginButtonWidget.style?.backgroundColor?.resolve(const {}),

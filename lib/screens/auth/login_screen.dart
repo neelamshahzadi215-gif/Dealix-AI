@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
+import '../../services/guest_usage_session.dart';
 import 'signup_screen.dart';
 import '../home/home_screen.dart';
 
@@ -48,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    GuestUsageSession.instance.endGuestSession();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(builder: (_) => const HomeScreen()),
     );
@@ -336,7 +339,74 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
 
-                          const SizedBox(height: 27),
+                          const SizedBox(height: 12),
+
+                          Material(
+                            color: AppColors.lightMint,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.mediumRadius,
+                              ),
+                              side: const BorderSide(color: AppColors.border),
+                            ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.mediumRadius,
+                              ),
+                              onTap: () {
+                                GuestUsageSession.instance.startGuestSession();
+                                final navigator = Navigator.of(context);
+                                navigator.pushNamedAndRemoveUntil(
+                                  AppRouter.home,
+                                  (_) => false,
+                                );
+                                navigator.pushNamed(AppRouter.freeUsage);
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person_outline_rounded,
+                                      color: AppColors.secondaryTeal,
+                                      size: 23,
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Continue as Guest',
+                                            style: TextStyle(
+                                              color: AppColors.secondaryTeal,
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            'Get 2 free product checks',
+                                            style: TextStyle(
+                                              color: AppColors.textSecondary,
+                                              fontSize: 11,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
 
                           // Signup navigation.
                           Center(
