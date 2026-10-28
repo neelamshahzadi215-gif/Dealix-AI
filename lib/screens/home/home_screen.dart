@@ -6,8 +6,10 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import '../../models/product/product.dart';
 import '../../services/mock/mock_data_service.dart';
+import '../../services/guest_usage_session.dart';
 import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../widgets/common/account_required_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -268,6 +270,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final normalizedCode = scannedCode.trim();
+
+    if (!GuestUsageSession.instance.tryUseSearch()) {
+      await showAccountRequiredDialog(context);
+      return;
+    }
 
     final matches = _products.where(
       (product) => product.barcode == normalizedCode,

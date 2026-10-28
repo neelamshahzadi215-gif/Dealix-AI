@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../screens/splash/splash_screen.dart';
 import '../../screens/auth/login_screen.dart';
 import '../../screens/auth/signup_screen.dart';
+import '../../screens/auth/free_usage_screen.dart';
 import '../../screens/home/home_screen.dart';
 import '../../screens/search/search_screen.dart';
 import '../../screens/search/gallery_screen.dart';
@@ -15,6 +16,7 @@ class AppRouter {
   static const String splash = '/';
   static const String login = '/login';
   static const String signup = '/signup';
+  static const String freeUsage = '/free-usage';
   static const String home = '/home';
   static const String search = '/search';
   static const String gallery = '/gallery';
@@ -41,6 +43,12 @@ class AppRouter {
           builder: (_) => const SignupScreen(),
         );
 
+      case freeUsage:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const FreeUsageScreen(),
+        );
+
       case home:
         return MaterialPageRoute(
           settings: settings,
@@ -62,10 +70,10 @@ class AppRouter {
         );
 
       case aiScan:
-       return MaterialPageRoute(
-           settings: settings,
-           builder: (_) => const AiScanScreen(),
-  );
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const AiScanScreen(),
+        );
 
       case analysis:
         return MaterialPageRoute(

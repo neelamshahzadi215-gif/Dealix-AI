@@ -4,14 +4,18 @@ import '../../core/routes/app_router.dart';
 import 'package:dealix_ai/models/product/product.dart';
 import 'package:dealix_ai/services/mock/mock_data_service.dart';
 import 'package:dealix_ai/services/mock/recent_search_service.dart';
+import 'package:dealix_ai/services/guest_usage_session.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../widgets/common/account_required_dialog.dart';
 import 'gallery_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key, required String initialQuery});
+  final String initialQuery;
+
+  const SearchScreen({super.key, required this.initialQuery});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -27,9 +31,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   bool _isLoading = true;
   bool _hasError = false;
+  bool _initialSearchBlocked = false;
 
   File? _selectedImage;
   String _searchQuery = '';
+  final GuestUsageSession _guestSession = GuestUsageSession.instance;
 
   final List<String> _popularSearches = [
     'Samsung',
@@ -41,7 +47,22 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    _searchController.text = widget.initialQuery;
+    _searchQuery = widget.initialQuery.trim();
+
+    if (_searchQuery.isNotEmpty && !_guestSession.tryUseSearch()) {
+      _searchQuery = '';
+      _searchController.clear();
+      _initialSearchBlocked = true;
+    }
+
     _loadInitialData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _initialSearchBlocked) {
+        showAccountRequiredDialog(context);
+      }
+    });
   }
 
   @override
@@ -106,9 +127,33 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void _onSearchChanged(String value) {
+    if (_searchQuery.isEmpty) return;
+
+    setState(() {
+      _searchQuery = '';
+      _filteredProducts = List<Product>.from(_allProducts);
+    });
+  }
+
+  void _submitSearch([String? value]) {
+    final query = (value ?? _searchController.text).trim();
+    if (query.isEmpty) {
+      _searchProducts();
+      return;
+    }
+
+    if (!_guestSession.tryUseSearch()) {
+      showAccountRequiredDialog(context);
+      return;
+    }
+
+    _searchProducts(query);
+  }
+
   void _selectPopularSearch(String value) {
     _searchController.text = value;
-    _searchProducts(value);
+    _submitSearch(value);
     FocusScope.of(context).unfocus();
   }
 
@@ -274,8 +319,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSearchField() {
     return TextField(
       controller: _searchController,
-      onChanged: _searchProducts,
-      onSubmitted: _searchProducts,
+      onChanged: _onSearchChanged,
+      onSubmitted: _submitSearch,
       textInputAction: TextInputAction.search,
       style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
@@ -476,7 +521,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 onTap: () {
                   _searchController.text = product.name;
-                  _searchProducts(product.name);
+                  _submitSearch(product.name);
                   FocusScope.of(context).unfocus();
                 },
               ),
