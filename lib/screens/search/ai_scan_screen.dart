@@ -57,7 +57,7 @@ final bool _isLoading = false;
       } else if (response.exception != null) {
         if (!mounted) return;
         _showMessage(
-          'Camera image recover nahi hui. Dobara try karein.',
+          'Camera image could not be recovered.',
         );
       }
     } catch (e) {
@@ -89,7 +89,7 @@ final bool _isLoading = false;
       }
     } catch (e) {
       if (mounted) {
-        _showMessage('Camera open nahi hua: $e');
+        _showMessage('Unable to open camera: $e');
       }
     } finally {
       await prefs.remove('restore_ai_scan_after_camera');
@@ -110,7 +110,7 @@ final bool _isLoading = false;
       await _setSelectedImage(File(pickedImage.path));
     } catch (e) {
       if (!mounted) return;
-      _showMessage('Gallery open nahi hui: $e');
+      _showMessage('Unable to open Gallery: $e');
     }
   }
 
@@ -122,12 +122,12 @@ final bool _isLoading = false;
       if (!mounted) return;
 
       if (fileSize == 0) {
-        _showMessage('Selected image empty hai. Dobara try karein.');
+        _showMessage('No image selected.');
         return;
       }
 
       if (fileSize > 5 * 1024 * 1024) {
-        _showMessage('5 MB se choti image select karein.');
+        _showMessage('Please select an image smaller than 5 MB.');
         return;
       }
 
@@ -143,7 +143,7 @@ final bool _isLoading = false;
       _showMessage('Product photo selected');
     } catch (e) {
       if (!mounted) return;
-      _showMessage('Image open nahi ho saki. Dobara try karein.');
+      _showMessage('Unable to open image.');
     }
   }
 
@@ -208,7 +208,7 @@ final bool _isLoading = false;
         _selectedImage == null &&
         detailTerms.isEmpty) {
       _showMessage(
-        'Product name, photo ya details mein se kuch add karein.',
+        'Add Product name, photo or  details.',
       );
       return;
     }
