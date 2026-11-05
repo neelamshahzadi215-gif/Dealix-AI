@@ -10,11 +10,15 @@ import 'my_alerts_screen.dart';
 class SetPriceAlertScreen extends StatefulWidget {
   final String productName;
   final double currentPrice;
+  final String productId;
+  final List<PriceAlert>? savedAlerts;
 
   const SetPriceAlertScreen({
     super.key,
     this.productName = 'Sony WH-1000XM5',
     this.currentPrice = 96400,
+    this.productId = 'p_temp',
+    this.savedAlerts,
   });
 
   @override
@@ -23,18 +27,20 @@ class SetPriceAlertScreen extends StatefulWidget {
 
 class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
   double _targetPrice = 85000;
-  
-  // Yahan alerts save honge
-  final List<PriceAlert> _savedAlerts = [];
+
+  late List<PriceAlert> _savedAlerts;
 
   @override
   void initState() {
     super.initState();
+
+    _savedAlerts = widget.savedAlerts ?? [];
     _targetPrice = widget.currentPrice * 0.88;
   }
 
   String _formatPrice(double price) {
     final value = price.round().toString();
+
     return 'Rs ${value.replaceAllMapped(
       RegExp(r'\B(?=(\d{3})+(?!\d))'),
       (match) => ',',
@@ -43,11 +49,16 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
 
   int get _discountPercentage {
     if (widget.currentPrice <= 0) return 0;
-    return (((widget.currentPrice - _targetPrice) / widget.currentPrice) * 100).round();
+
+    return (((widget.currentPrice - _targetPrice) /
+            widget.currentPrice) *
+        100)
+        .round();
   }
 
   void _showMessage(String message) {
     if (!mounted) return;
+
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
@@ -69,7 +80,9 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
     if (widget.currentPrice <= 0 ||
         _targetPrice <= 0 ||
         _targetPrice >= widget.currentPrice) {
-      _showMessage('Target price must be lower than the current price.');
+      _showMessage(
+        'Target price must be lower than the current price.',
+      );
       return;
     }
 
@@ -78,7 +91,7 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
         0,
         PriceAlert(
           id: DateTime.now().toString(),
-          productId: 'p_temp',
+          productId: widget.productId,
           productName: widget.productName,
           currentPrice: widget.currentPrice,
           targetPrice: _targetPrice,
@@ -91,11 +104,12 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
   }
 
   void _openMyAlerts() {
-    // Saved alerts ki list MyAlertsScreen mein pass ki ja rahi hai
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyAlertsScreen(savedAlerts: _savedAlerts),
+        builder: (context) => MyAlertsScreen(
+          savedAlerts: _savedAlerts,
+        ),
       ),
     );
   }
@@ -118,15 +132,20 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
               Icon(
                 icon,
                 size: 23,
-                color: selected ? AppColors.secondaryTeal : AppColors.textSecondary,
+                color: selected
+                    ? AppColors.secondaryTeal
+                    : AppColors.textSecondary,
               ),
               const SizedBox(height: 4),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 10,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  color: selected ? AppColors.secondaryTeal : AppColors.textSecondary,
+                  fontWeight:
+                      selected ? FontWeight.w700 : FontWeight.w500,
+                  color: selected
+                      ? AppColors.secondaryTeal
+                      : AppColors.textSecondary,
                 ),
               ),
             ],
@@ -143,7 +162,9 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
         padding: const EdgeInsets.fromLTRB(8, 9, 8, 7),
         decoration: BoxDecoration(
           color: AppColors.white,
-          border: const Border(top: BorderSide(color: AppColors.border)),
+          border: const Border(
+            top: BorderSide(color: AppColors.border),
+          ),
           boxShadow: [
             BoxShadow(
               color: AppColors.textPrimary.withValues(alpha: 0.04),
@@ -158,18 +179,21 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
               icon: Icons.home_rounded,
               label: 'Home',
               onTap: () {
-                if (Navigator.canPop(context)) Navigator.pop(context);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
               },
             ),
             _buildNavItem(
               icon: Icons.notifications_active_rounded,
               label: 'Alerts',
               selected: true,
-              onTap: () {},
+              onTap: _openMyAlerts,
             ),
             Expanded(
               child: InkWell(
-                onTap: () => Navigator.pushNamed(context, AppRouter.aiScan),
+                onTap: () =>
+                    Navigator.pushNamed(context, AppRouter.aiScan),
                 borderRadius: BorderRadius.circular(16),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 2),
@@ -184,7 +208,8 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
                           borderRadius: BorderRadius.circular(15),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.secondaryTeal.withValues(alpha: 0.22),
+                              color: AppColors.secondaryTeal
+                                  .withValues(alpha: 0.22),
                               blurRadius: 8,
                               offset: const Offset(0, 3),
                             ),
@@ -213,12 +238,13 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
             _buildNavItem(
               icon: Icons.bookmark_border_rounded,
               label: 'Saved',
-              onTap: _openMyAlerts, // Yahan se bhi My Alerts khulega
+              onTap: _openMyAlerts,
             ),
             _buildNavItem(
               icon: Icons.person_outline_rounded,
               label: 'Profile',
-              onTap: () => _showMessage('Profile screen not connected'),
+              onTap: () =>
+                  _showMessage('Profile screen not connected'),
             ),
           ],
         ),
@@ -261,7 +287,10 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
         bottomNavigationBar: _buildBottomNavigation(),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 12,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -305,7 +334,10 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.secondaryTeal,
                     borderRadius: BorderRadius.circular(20),
@@ -327,10 +359,15 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
                     inactiveTrackColor: AppColors.border,
                     thumbColor: AppColors.secondaryTeal,
                     overlayColor: AppColors.softMint,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 10,
+                    ),
                   ),
                   child: Slider(
-                    value: _targetPrice.clamp(1.0, widget.currentPrice),
+                    value: _targetPrice.clamp(
+                      1.0,
+                      widget.currentPrice,
+                    ),
                     min: 1,
                     max: widget.currentPrice,
                     onChanged: _updateTarget,
@@ -363,7 +400,9 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
                     onPressed: _openMyAlerts,
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.secondaryTeal,
-                      side: const BorderSide(color: AppColors.secondaryTeal),
+                      side: const BorderSide(
+                        color: AppColors.secondaryTeal,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(26),
                       ),
@@ -388,7 +427,10 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
 
   Widget _buildProductCard() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 12,
+      ),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
