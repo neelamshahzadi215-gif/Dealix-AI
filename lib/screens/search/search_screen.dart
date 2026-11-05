@@ -822,8 +822,10 @@ class _SearchScreenState extends State<SearchScreen> {
             _buildNavItem(
               icon: Icons.notifications_none_rounded,
               label: 'Alerts',
-              onTap: () => _showNotConnectedMessage('Alerts'),
-            ),
+              onTap: () {
+    Navigator.pushNamed(context, AppRouter.priceAlert);
+  },
+),
             Expanded(
               child: InkWell(
                 onTap: () {

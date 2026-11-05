@@ -1102,14 +1102,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          setState(() {
-            _selectedIndex = index;
-          });
+  if (index == 1) {
+    Navigator.pushNamed(context, AppRouter.priceAlert);
+    return;
+  }
 
-          if (index != 0) {
-            _message('$label section coming soon.');
-          }
-        },
+  setState(() {
+    _selectedIndex = index;
+  });
+
+  if (index != 0) {
+    _message('$label section coming soon.');
+  }
+},
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

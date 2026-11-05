@@ -1,6 +1,8 @@
 import 'package:dealix_ai/models/product/product.dart';
 import 'package:flutter/material.dart';
 
+import '../../screens/price_alert/set_price_alert_screen.dart';
+
 import '../../screens/splash/splash_screen.dart';
 import '../../screens/auth/login_screen.dart';
 import '../../screens/auth/signup_screen.dart';
@@ -23,6 +25,7 @@ class AppRouter {
   static const String aiScan = '/ai-scan';
   static const String analysis = '/analysis';
   static const String comparison = '/comparison';
+  static const String priceAlert = '/price-alert';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -75,6 +78,12 @@ class AppRouter {
           settings: settings,
           builder: (_) => const AiAnalysisScreen(),
         );
+
+        case priceAlert:
+  return MaterialPageRoute(
+    settings: settings,
+    builder: (_) => const SetPriceAlertScreen(),
+  );
 
       case comparison:
         final product = settings.arguments;
