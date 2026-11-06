@@ -1,10 +1,11 @@
+
 import 'package:flutter/material.dart';
 
 import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
-import '../../widgets/common/primary_button.dart';
 import '../../models/alert/price_alert.dart';
+import '../../widgets/common/primary_button.dart';
 import 'my_alerts_screen.dart';
 
 class SetPriceAlertScreen extends StatefulWidget {
@@ -22,7 +23,8 @@ class SetPriceAlertScreen extends StatefulWidget {
   });
 
   @override
-  State<SetPriceAlertScreen> createState() => _SetPriceAlertScreenState();
+  State<SetPriceAlertScreen> createState() =>
+      _SetPriceAlertScreenState();
 }
 
 class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
@@ -120,10 +122,14 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
     required VoidCallback onTap,
     bool selected = false,
   }) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(
+          AppTheme.mediumRadius,
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 7),
           child: Column(
@@ -131,7 +137,6 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
             children: [
               Icon(
                 icon,
-                size: 23,
                 color: selected
                     ? AppColors.secondaryTeal
                     : AppColors.textSecondary,
@@ -139,10 +144,7 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight:
-                      selected ? FontWeight.w700 : FontWeight.w500,
+                style: textTheme.bodySmall?.copyWith(
                   color: selected
                       ? AppColors.secondaryTeal
                       : AppColors.textSecondary,
@@ -194,7 +196,9 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
               child: InkWell(
                 onTap: () =>
                     Navigator.pushNamed(context, AppRouter.aiScan),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(
+                  AppTheme.largeRadius,
+                ),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 2),
                   child: Column(
@@ -205,7 +209,9 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
                         height: 43,
                         decoration: BoxDecoration(
                           color: AppColors.secondaryTeal,
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.mediumRadius,
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.secondaryTeal
@@ -218,17 +224,17 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
                         child: const Icon(
                           Icons.qr_code_scanner_rounded,
                           color: AppColors.white,
-                          size: 25,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         'Scan',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.secondaryTeal,
-                        ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(
+                              color: AppColors.secondaryTeal,
+                            ),
                       ),
                     ],
                   ),
@@ -254,178 +260,164 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Theme(
       data: AppTheme.lightTheme,
-      child: Scaffold(
-        backgroundColor: AppColors.appBackground,
-        appBar: AppBar(
-          title: const Text(
-            'Set Price Alert',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          centerTitle: false,
-          titleSpacing: 0,
-          backgroundColor: AppColors.white,
-          foregroundColor: AppColors.textPrimary,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.maybePop(context),
-            icon: const Icon(Icons.arrow_back),
-          ),
-          actions: [
-            IconButton(
-              tooltip: 'My Alerts',
-              onPressed: _openMyAlerts,
-              icon: const Icon(Icons.notifications_none),
-            ),
-          ],
-        ),
-        bottomNavigationBar: _buildBottomNavigation(),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 12,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                const Icon(
-                  Icons.notifications_active,
-                  color: AppColors.secondaryTeal,
-                  size: 58,
+      child: Builder(
+        builder: (context) {
+          final screenTextTheme = Theme.of(context).textTheme;
+
+          return Scaffold(
+            backgroundColor: AppColors.appBackground,
+            appBar: AppBar(
+              title: Text(
+                'Set Price Alert',
+                style: screenTextTheme.titleLarge,
+              ),
+              centerTitle: false,
+              titleSpacing: 0,
+              actions: [
+                IconButton(
+                  tooltip: 'My Alerts',
+                  onPressed: _openMyAlerts,
+                  icon: const Icon(Icons.notifications_none),
                 ),
-                const SizedBox(height: 12),
-                const Text(
-                  "We'll notify you when\nthe price drops",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    height: 1.25,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                _buildProductCard(),
-                const SizedBox(height: 24),
-                const Text(
-                  'Target price',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.secondaryTeal,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  _formatPrice(_targetPrice),
-                  style: const TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.secondaryTeal,
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.secondaryTeal,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    '-$_discountPercentage%',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    trackHeight: 4,
-                    activeTrackColor: AppColors.secondaryTeal,
-                    inactiveTrackColor: AppColors.border,
-                    thumbColor: AppColors.secondaryTeal,
-                    overlayColor: AppColors.softMint,
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 10,
-                    ),
-                  ),
-                  child: Slider(
-                    value: _targetPrice.clamp(
-                      1.0,
-                      widget.currentPrice,
-                    ),
-                    min: 1,
-                    max: widget.currentPrice,
-                    onChanged: _updateTarget,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  "You'll get an alert when the price\nreaches your target.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.4,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: PrimaryButton(
-                    text: 'Save Alert',
-                    onPressed: _saveAlert,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: OutlinedButton(
-                    onPressed: _openMyAlerts,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.secondaryTeal,
-                      side: const BorderSide(
-                        color: AppColors.secondaryTeal,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(26),
-                      ),
-                    ),
-                    child: const Text(
-                      'View My Alerts',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 28),
               ],
             ),
-          ),
-        ),
+            bottomNavigationBar: _buildBottomNavigation(),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 10),
+
+                    const Icon(
+                      Icons.notifications_active,
+                      color: AppColors.secondaryTeal,
+                      size: 58,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    Text(
+                      "We'll notify you when\nthe price drops",
+                      textAlign: TextAlign.center,
+                      style: screenTextTheme.headlineMedium,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    _buildProductCard(),
+
+                    const SizedBox(height: 24),
+
+                    Text(
+                      'Target price',
+                      style: screenTextTheme.titleSmall?.copyWith(
+                        color: AppColors.secondaryTeal,
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    Text(
+                      _formatPrice(_targetPrice),
+                      style: screenTextTheme.headlineLarge?.copyWith(
+                        color: AppColors.secondaryTeal,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondaryTeal,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '-$_discountPercentage%',
+                        style: screenTextTheme.bodySmall?.copyWith(
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        trackHeight: 4,
+                        activeTrackColor: AppColors.secondaryTeal,
+                        inactiveTrackColor: AppColors.border,
+                        thumbColor: AppColors.secondaryTeal,
+                        overlayColor: AppColors.softMint,
+                        thumbShape:
+                            const RoundSliderThumbShape(
+                          enabledThumbRadius: 10,
+                        ),
+                      ),
+                      child: Slider(
+                        value: _targetPrice.clamp(
+                          1.0,
+                          widget.currentPrice,
+                        ),
+                        min: 1,
+                        max: widget.currentPrice,
+                        onChanged: _updateTarget,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(
+                      "You'll get an alert when the price\nreaches your target.",
+                      textAlign: TextAlign.center,
+                      style: screenTextTheme.bodyMedium,
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: PrimaryButton(
+                        text: 'Save Alert',
+                        onPressed: _saveAlert,
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: _openMyAlerts,
+                        child: const Text('View My Alerts'),
+                      ),
+                    ),
+
+                    const SizedBox(height: 28),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildProductCard() {
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 14,
@@ -433,7 +425,9 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
       ),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(
+          AppTheme.largeRadius,
+        ),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
@@ -443,34 +437,32 @@ class _SetPriceAlertScreenState extends State<SetPriceAlertScreen> {
             width: 56,
             decoration: BoxDecoration(
               color: AppColors.lightMint,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(
+                AppTheme.mediumRadius,
+              ),
             ),
             child: const Icon(
               Icons.headphones,
-              size: 28,
               color: AppColors.secondaryTeal,
             ),
           ),
+
           const SizedBox(width: 14),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   widget.productName,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+                  style: textTheme.titleMedium,
                 ),
+
                 const SizedBox(height: 4),
+
                 Text(
                   'Current price: ${_formatPrice(widget.currentPrice)}',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
+                  style: textTheme.bodySmall,
                 ),
               ],
             ),

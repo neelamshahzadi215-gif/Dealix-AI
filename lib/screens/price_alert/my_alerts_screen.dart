@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../../core/routes/app_router.dart';
@@ -27,6 +28,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
 
   List<Product> _watchlistProducts = [];
   bool _isLoadingWatchlist = true;
+
+  final Set<String> _disabledAlertIds = {};
 
   @override
   void initState() {
@@ -65,22 +68,28 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   int _calculateDrop(double currentPrice, double targetPrice) {
     if (currentPrice <= 0) return 0;
 
-    return (((currentPrice - targetPrice) / currentPrice) * 100).round();
+    return (((currentPrice - targetPrice) / currentPrice) * 100)
+        .round();
   }
 
-  void _showMessage(String message) {
+  void _showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(message),
+          content: Text(
+            message,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.white,
+                ),
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: AppColors.secondaryTeal,
         ),
       );
   }
 
-  void _openSetAlert(Product product) {
+  void _openSetAlert(BuildContext context, Product product) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -97,30 +106,36 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     });
   }
 
-  final Set<String> _disabledAlertIds = {};
+  void _toggleAlert(int index, bool value) {
+    final alertId = widget.savedAlerts[index].id;
 
-void _toggleAlert(int index, bool value) {
-  final alertId = widget.savedAlerts[index].id;
-
-  setState(() {
-    if (value) {
-      _disabledAlertIds.remove(alertId);
-    } else {
-      _disabledAlertIds.add(alertId);
-    }
-  });
-}
-
-  void _deleteAlert(int index) {
     setState(() {
-      widget.savedAlerts.removeAt(index);
+      if (value) {
+        _disabledAlertIds.remove(alertId);
+      } else {
+        _disabledAlertIds.add(alertId);
+      }
     });
-
-    _showMessage('Alert removed successfully.');
   }
 
-  Widget _buildTabButton(String title, int index) {
-    final bool isSelected = _selectedTabIndex == index;
+  void _deleteAlert(BuildContext context, int index) {
+    final alertId = widget.savedAlerts[index].id;
+
+    setState(() {
+      widget.savedAlerts.removeAt(index);
+      _disabledAlertIds.remove(alertId);
+    });
+
+    _showMessage(context, 'Alert removed successfully.');
+  }
+
+  Widget _buildTabButton(
+    BuildContext context,
+    String title,
+    int index,
+  ) {
+    final isSelected = _selectedTabIndex == index;
+    final textTheme = Theme.of(context).textTheme;
 
     return Expanded(
       child: GestureDetector(
@@ -134,15 +149,20 @@ void _toggleAlert(int index, bool value) {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.secondaryTeal
-                : AppTheme.lightTheme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(12),
+                : AppColors.white,
+            borderRadius: BorderRadius.circular(
+              AppTheme.mediumRadius,
+            ),
+            border: Border.all(
+              color: isSelected
+                  ? AppColors.secondaryTeal
+                  : AppColors.border,
+            ),
           ),
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
+            style: textTheme.titleSmall?.copyWith(
               color: isSelected
                   ? AppColors.white
                   : AppColors.textSecondary,
@@ -153,7 +173,13 @@ void _toggleAlert(int index, bool value) {
     );
   }
 
-  Widget _buildAlertCard(PriceAlert alert, int index) {
+  Widget _buildAlertCard(
+    BuildContext context,
+    PriceAlert alert,
+    int index,
+  ) {
+    final textTheme = Theme.of(context).textTheme;
+
     final drop = _calculateDrop(
       alert.currentPrice,
       alert.targetPrice,
@@ -164,8 +190,12 @@ void _toggleAlert(int index, bool value) {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(
+          AppTheme.largeRadius,
+        ),
+        border: Border.all(
+          color: AppColors.border,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,31 +207,30 @@ void _toggleAlert(int index, bool value) {
                 width: 48,
                 decoration: BoxDecoration(
                   color: AppColors.lightMint,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(
+                    AppTheme.mediumRadius,
+                  ),
                 ),
                 child: const Icon(
                   Icons.notifications_active_rounded,
                   color: AppColors.secondaryTeal,
-                  size: 25,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   alert.productName,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: AppColors.textPrimary,
-                        fontWeight: FontWeight.w700,
-                      ),
+                  style: textTheme.titleSmall,
                 ),
               ),
               Switch(
-                value: alert.isEnabled && !_disabledAlertIds.contains(alert.id),
+                value: alert.isEnabled &&
+                    !_disabledAlertIds.contains(alert.id),
                 activeThumbColor: AppColors.white,
                 activeTrackColor: AppColors.secondaryTeal,
                 inactiveThumbColor: AppColors.white,
                 inactiveTrackColor:
-                    AppTheme.lightTheme.colorScheme.outlineVariant,
+                    Theme.of(context).colorScheme.outlineVariant,
                 onChanged: (value) => _toggleAlert(index, value),
               ),
             ],
@@ -211,12 +240,14 @@ void _toggleAlert(int index, bool value) {
             children: [
               Expanded(
                 child: _buildPriceInfo(
+                  context,
                   'Current Price',
                   _formatPrice(alert.currentPrice),
                 ),
               ),
               Expanded(
                 child: _buildPriceInfo(
+                  context,
                   'Target Price',
                   _formatPrice(alert.targetPrice),
                 ),
@@ -233,24 +264,29 @@ void _toggleAlert(int index, bool value) {
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.softMint,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(
+                    AppTheme.largeRadius,
+                  ),
                 ),
                 child: Text(
                   '$drop% price drop',
-                  style: const TextStyle(
+                  style: textTheme.bodySmall?.copyWith(
                     color: AppColors.secondaryTeal,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
               const Spacer(),
               TextButton.icon(
-                onPressed: () => _deleteAlert(index),
-                icon: const Icon(Icons.delete_outline_rounded, size: 18),
-                label: const Text('Remove'),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.error,
+                onPressed: () => _deleteAlert(context, index),
+                icon: const Icon(
+                  Icons.delete_outline_rounded,
+                  color: AppColors.error,
+                ),
+                label: Text(
+                  'Remove',
+                  style: textTheme.bodyMedium?.copyWith(
+                    color: AppColors.error,
+                  ),
                 ),
               ),
             ],
@@ -260,38 +296,46 @@ void _toggleAlert(int index, bool value) {
     );
   }
 
-  Widget _buildPriceInfo(String title, String price) {
+  Widget _buildPriceInfo(
+    BuildContext context,
+    String title,
+    String price,
+  ) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 12,
-            color: AppColors.textSecondary,
-          ),
+          style: textTheme.bodySmall,
         ),
         const SizedBox(height: 5),
         Text(
           price,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
-          ),
+          style: textTheme.titleSmall,
         ),
       ],
     );
   }
 
-  Widget _buildWatchlistCard(Product product) {
+  Widget _buildWatchlistCard(
+    BuildContext context,
+    Product product,
+  ) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(
+          AppTheme.largeRadius,
+        ),
+        border: Border.all(
+          color: AppColors.border,
+        ),
       ),
       child: Row(
         children: [
@@ -300,7 +344,9 @@ void _toggleAlert(int index, bool value) {
             width: 58,
             decoration: BoxDecoration(
               color: AppColors.lightMint,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(
+                AppTheme.mediumRadius,
+              ),
             ),
             child: const Icon(
               Icons.shopping_bag_outlined,
@@ -317,44 +363,21 @@ void _toggleAlert(int index, bool value) {
                   product.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
+                  style: textTheme.bodyMedium?.copyWith(
                     color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   _formatPrice(product.price.toDouble()),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
+                  style: textTheme.titleSmall?.copyWith(
                     color: AppColors.secondaryTeal,
                   ),
                 ),
                 const SizedBox(height: 8),
-                SizedBox(
-                  height: 34,
-                  child: OutlinedButton(
-                    onPressed: () => _openSetAlert(product),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.secondaryTeal,
-                      side: const BorderSide(
-                        color: AppColors.secondaryTeal,
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: const Text(
-                      'Set Alert',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                OutlinedButton(
+                  onPressed: () => _openSetAlert(context, product),
+                  child: const Text('Set Alert'),
                 ),
               ],
             ),
@@ -364,11 +387,14 @@ void _toggleAlert(int index, bool value) {
     );
   }
 
-  Widget _buildEmptyAlerts() {
+  Widget _buildEmptyAlerts(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 55),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
               Icons.notifications_none_rounded,
@@ -376,23 +402,15 @@ void _toggleAlert(int index, bool value) {
               color: AppColors.secondaryTeal,
             ),
             const SizedBox(height: 14),
-            const Text(
+            Text(
               'No Price Alerts Yet',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
+              style: textTheme.titleLarge,
             ),
             const SizedBox(height: 7),
-            const Text(
+            Text(
               'Set an alert to get notified when\nyour product price drops.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13,
-                height: 1.5,
-                color: AppColors.textSecondary,
-              ),
+              style: textTheme.bodyMedium,
             ),
             const SizedBox(height: 18),
             ElevatedButton(
@@ -401,10 +419,6 @@ void _toggleAlert(int index, bool value) {
                   _selectedTabIndex = 1;
                 });
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.secondaryTeal,
-                foregroundColor: AppColors.white,
-              ),
               child: const Text('Explore Watchlist'),
             ),
           ],
@@ -413,26 +427,26 @@ void _toggleAlert(int index, bool value) {
     );
   }
 
-  Widget _buildWatchlistContent() {
+  Widget _buildWatchlistContent(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     if (_isLoadingWatchlist) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(35),
-          child: CircularProgressIndicator(
-            color: AppColors.secondaryTeal,
-          ),
+          child: CircularProgressIndicator(),
         ),
       );
     }
 
     if (_watchlistProducts.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(35),
+          padding: const EdgeInsets.all(35),
           child: Text(
             'No products available in Watchlist.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.textSecondary),
+            style: textTheme.bodyMedium,
           ),
         ),
       );
@@ -440,12 +454,16 @@ void _toggleAlert(int index, bool value) {
 
     return Column(
       children: _watchlistProducts
-          .map((product) => _buildWatchlistCard(product))
+          .map(
+            (product) => _buildWatchlistCard(context, product),
+          )
           .toList(),
     );
   }
 
-  Widget _buildBottomNavigation() {
+  Widget _buildBottomNavigation(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return SafeArea(
       top: false,
       child: Container(
@@ -453,7 +471,9 @@ void _toggleAlert(int index, bool value) {
         decoration: BoxDecoration(
           color: AppColors.white,
           border: const Border(
-            top: BorderSide(color: AppColors.border),
+            top: BorderSide(
+              color: AppColors.border,
+            ),
           ),
           boxShadow: [
             BoxShadow(
@@ -466,6 +486,7 @@ void _toggleAlert(int index, bool value) {
         child: Row(
           children: [
             _buildNavItem(
+              context,
               icon: Icons.home_rounded,
               label: 'Home',
               onTap: () {
@@ -473,6 +494,7 @@ void _toggleAlert(int index, bool value) {
               },
             ),
             _buildNavItem(
+              context,
               icon: Icons.notifications_active_rounded,
               label: 'Alerts',
               selected: true,
@@ -480,8 +502,12 @@ void _toggleAlert(int index, bool value) {
             ),
             Expanded(
               child: InkWell(
-                onTap: () => Navigator.pushNamed(context, AppRouter.aiScan),
-                borderRadius: BorderRadius.circular(16),
+                onTap: () {
+                  Navigator.pushNamed(context, AppRouter.aiScan);
+                },
+                borderRadius: BorderRadius.circular(
+                  AppTheme.largeRadius,
+                ),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 2),
                   child: Column(
@@ -492,20 +518,19 @@ void _toggleAlert(int index, bool value) {
                         height: 43,
                         decoration: BoxDecoration(
                           color: AppColors.secondaryTeal,
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.mediumRadius,
+                          ),
                         ),
                         child: const Icon(
                           Icons.qr_code_scanner_rounded,
                           color: AppColors.white,
-                          size: 25,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         'Scan',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
+                        style: textTheme.bodySmall?.copyWith(
                           color: AppColors.secondaryTeal,
                         ),
                       ),
@@ -515,6 +540,7 @@ void _toggleAlert(int index, bool value) {
               ),
             ),
             _buildNavItem(
+              context,
               icon: Icons.bookmark_border_rounded,
               label: 'Saved',
               selected: _selectedTabIndex == 1,
@@ -525,9 +551,15 @@ void _toggleAlert(int index, bool value) {
               },
             ),
             _buildNavItem(
+              context,
               icon: Icons.person_outline_rounded,
               label: 'Profile',
-              onTap: () => _showMessage('Profile screen not connected'),
+              onTap: () {
+                _showMessage(
+                  context,
+                  'Profile screen not connected',
+                );
+              },
             ),
           ],
         ),
@@ -535,16 +567,21 @@ void _toggleAlert(int index, bool value) {
     );
   }
 
-  Widget _buildNavItem({
+  Widget _buildNavItem(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
     bool selected = false,
   }) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(
+          AppTheme.mediumRadius,
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 7),
           child: Column(
@@ -552,7 +589,6 @@ void _toggleAlert(int index, bool value) {
             children: [
               Icon(
                 icon,
-                size: 23,
                 color: selected
                     ? AppColors.secondaryTeal
                     : AppColors.textSecondary,
@@ -560,12 +596,13 @@ void _toggleAlert(int index, bool value) {
               const SizedBox(height: 4),
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                style: textTheme.bodySmall?.copyWith(
                   color: selected
                       ? AppColors.secondaryTeal
                       : AppColors.textSecondary,
+                  fontWeight: selected
+                      ? FontWeight.w600
+                      : FontWeight.normal,
                 ),
               ),
             ],
@@ -579,60 +616,80 @@ void _toggleAlert(int index, bool value) {
   Widget build(BuildContext context) {
     return Theme(
       data: AppTheme.lightTheme,
-      child: Scaffold(
-        backgroundColor: AppColors.appBackground,
-        appBar: AppBar(
-          title: const Text(
-            'My Alerts',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
+      child: Builder(
+        builder: (themeContext) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                'My Alerts',
+                style: Theme.of(themeContext).textTheme.titleLarge,
+              ),
             ),
-          ),
-          backgroundColor: AppColors.white,
-          foregroundColor: AppColors.textPrimary,
-          elevation: 0,
-          centerTitle: false,
-        ),
-        bottomNavigationBar: _buildBottomNavigation(),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
-                child: Row(
-                  children: [
-                    _buildTabButton('Price Alerts', 0),
-                    const SizedBox(width: 10),
-                    _buildTabButton('Watchlist', 1),
-                  ],
-                ),
+            bottomNavigationBar:
+                _buildBottomNavigation(themeContext),
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      20,
+                      18,
+                      20,
+                      16,
+                    ),
+                    child: Row(
+                      children: [
+                        _buildTabButton(
+                          themeContext,
+                          'Price Alerts',
+                          0,
+                        ),
+                        const SizedBox(width: 10),
+                        _buildTabButton(
+                          themeContext,
+                          'Watchlist',
+                          1,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: _selectedTabIndex == 0
+                        ? widget.savedAlerts.isEmpty
+                            ? _buildEmptyAlerts(themeContext)
+                            : ListView.builder(
+                                padding: const EdgeInsets.fromLTRB(
+                                  20,
+                                  4,
+                                  20,
+                                  20,
+                                ),
+                                itemCount: widget.savedAlerts.length,
+                                itemBuilder: (context, index) {
+                                  return _buildAlertCard(
+                                    themeContext,
+                                    widget.savedAlerts[index],
+                                    index,
+                                  );
+                                },
+                              )
+                        : ListView(
+                            padding: const EdgeInsets.fromLTRB(
+                              20,
+                              4,
+                              20,
+                              20,
+                            ),
+                            children: [
+                              _buildWatchlistContent(themeContext),
+                            ],
+                          ),
+                  ),
+                ],
               ),
-              Expanded(
-                child: _selectedTabIndex == 0
-                    ? widget.savedAlerts.isEmpty
-                        ? _buildEmptyAlerts()
-                        : ListView.builder(
-                            padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
-                            itemCount: widget.savedAlerts.length,
-                            itemBuilder: (context, index) {
-                              return _buildAlertCard(
-                                widget.savedAlerts[index],
-                                index,
-                              );
-                            },
-                          )
-                    : ListView(
-                        padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
-                        children: [
-                          _buildWatchlistContent(),
-                        ],
-                      ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
