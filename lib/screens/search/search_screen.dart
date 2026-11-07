@@ -10,12 +10,18 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../widgets/common/account_required_dialog.dart';
+import '../../widgets/common/dealix_main_bottom_nav.dart';
 import 'gallery_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   final String initialQuery;
+  final bool openedFromProfile;
 
-  const SearchScreen({super.key, required this.initialQuery});
+  const SearchScreen({
+    super.key,
+    required this.initialQuery,
+    this.openedFromProfile = false,
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -244,10 +250,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
       _showThemedMessage('Unable to select image. Please try again.');
     }
-  }
-
-  void _showNotConnectedMessage(String section) {
-    _showThemedMessage('$section screen is not connected yet.');
   }
 
   void _showThemedMessage(String message) {
@@ -795,141 +797,26 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildNavItem({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    bool selected = false,
-  }) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 7),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 23,
-                color: selected
-                    ? AppColors.secondaryTeal
-                    : AppColors.textSecondary,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  color: selected
-                      ? AppColors.secondaryTeal
-                      : AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigation() {
-    return SafeArea(
-      top: false,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 9, 8, 7),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          border: const Border(top: BorderSide(color: AppColors.border)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.textPrimary.withValues(alpha: 0.04),
-              blurRadius: 12,
-              offset: const Offset(0, -3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            _buildNavItem(
-              icon: Icons.home_rounded,
-              label: 'Home',
-              onTap: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                } else {
-                  _showNotConnectedMessage('Home');
-                }
-              },
-            ),
-            _buildNavItem(
-              icon: Icons.notifications_none_rounded,
-              label: 'Alerts',
-              onTap: () => _showNotConnectedMessage('Alerts'),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: () {
-  Navigator.pushNamed(context, AppRouter.aiScan);
-},
-                borderRadius: BorderRadius.circular(16),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 49,
-                        height: 43,
-                        decoration: BoxDecoration(
-                          color: AppColors.secondaryTeal,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.secondaryTeal.withValues(
-                                alpha: 0.22,
-                              ),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.qr_code_scanner_rounded,
-                          color: AppColors.white,
-                          size: 25,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Scan',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.secondaryTeal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            _buildNavItem(
-              icon: Icons.bookmark_border_rounded,
-              label: 'Saved',
-              onTap: () => _showNotConnectedMessage('Saved'),
-            ),
-            _buildNavItem(
-              icon: Icons.person_outline_rounded,
-              label: 'Profile',
-              onTap: () => _showNotConnectedMessage('Profile'),
-            ),
-          ],
-        ),
-      ),
-    );
+  void _handleBottomNavigation(DealixMainNavItem item) {
+    switch (item) {
+      case DealixMainNavItem.home:
+        Navigator.popUntil(context, ModalRoute.withName(AppRouter.home));
+      case DealixMainNavItem.alerts:
+        _showThemedMessage('Alerts section coming soon.');
+      case DealixMainNavItem.scan:
+        Navigator.pushNamed(context, AppRouter.aiScan);
+      case DealixMainNavItem.saved:
+        _showThemedMessage('Saved section coming soon.');
+      case DealixMainNavItem.profile:
+        if (widget.openedFromProfile) {
+          Navigator.popUntil(
+            context,
+            ModalRoute.withName(AppRouter.profile),
+          );
+        } else {
+          Navigator.pushNamed(context, AppRouter.profile);
+        }
+    }
   }
 
   @override
@@ -1028,7 +915,10 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigation(),
+      bottomNavigationBar: DealixMainBottomNav(
+        selectedItem: null,
+        onTap: _handleBottomNavigation,
+      ),
     );
   }
 }
