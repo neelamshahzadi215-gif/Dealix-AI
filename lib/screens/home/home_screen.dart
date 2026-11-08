@@ -1077,6 +1077,39 @@ class _HomeScreenState extends State<HomeScreen> {
     if (result == DealixMainNavItem.scan) {
       await _openBarcodeScanner();
     }
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+  if (index == 1) {
+    Navigator.pushNamed(context, AppRouter.priceAlert);
+    return;
+  }
+
+  setState(() {
+    _selectedIndex = index;
+  });
+
+  if (index != 0) {
+    _message('$label section coming soon.');
+  }
+},
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: selected ? buttonGreen : greyText, size: 23),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                color: selected ? buttonGreen : greyText,
+                fontSize: 9.5,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
