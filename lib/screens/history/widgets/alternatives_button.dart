@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_theme.dart';
 
 class AlternativesButton extends StatelessWidget {
   final VoidCallback onTap;
-
   const AlternativesButton({super.key, required this.onTap});
 
   @override
@@ -12,54 +12,27 @@ class AlternativesButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.secondaryTeal, // Darker green/teal
-          borderRadius: BorderRadius.circular(12),
-        ),
+        padding: const EdgeInsets.all(AppTheme.spacingMedium),
+        decoration: BoxDecoration(color: AppColors.secondaryTeal, borderRadius: BorderRadius.circular(AppTheme.mediumRadius)),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.local_offer_outlined,
-                color: AppColors.white,
-                size: 24,
-              ),
+              decoration: BoxDecoration(color: AppColors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(AppTheme.smallRadius)),
+              child: const Icon(Icons.local_offer_outlined, color: AppColors.white, size: 24),
             ),
-            const SizedBox(width: 12),
-            const Expanded(
+            const SizedBox(width: AppTheme.spacingSmall),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Find Cheaper Alternatives',
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 2),
-                  Text(
-                    'See similar products at better prices',
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 12,
-                    ),
-                  ),
+                  Text('Find Cheaper Alternatives', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.white)),
+                  const SizedBox(height: 4),
+                  Text('See similar products at better prices', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.white)),
                 ],
               ),
             ),
-            const Icon(
-              Icons.chevron_right,
-              color: AppColors.white,
-              size: 20,
-            ),
+            const Icon(Icons.chevron_right, color: AppColors.white, size: 20),
           ],
         ),
       ),

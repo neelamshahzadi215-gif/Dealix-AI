@@ -6,8 +6,11 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import '../../models/product/product.dart';
 import '../../services/mock/mock_data_service.dart';
+import '../../services/guest_usage_session.dart';
 import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../widgets/common/account_required_dialog.dart';
+import '../../widgets/common/dealix_main_bottom_nav.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -268,6 +271,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final normalizedCode = scannedCode.trim();
+
+    if (!GuestUsageSession.instance.tryUseSearch()) {
+      await showAccountRequiredDialog(context);
+      return;
+    }
 
     final matches = _products.where(
       (product) => product.barcode == normalizedCode,
@@ -1024,109 +1032,60 @@ class _HomeScreenState extends State<HomeScreen> {
   // =========================================================
 
   Widget _bottomNavigation() {
-    return Container(
-      decoration: const BoxDecoration(
-        color: white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            _navItem(icon: Icons.home_rounded, label: 'Home', index: 0),
+    final selectedItem = switch (_selectedIndex) {
+      1 => DealixMainNavItem.alerts,
+      2 => DealixMainNavItem.saved,
+      3 => DealixMainNavItem.profile,
+      _ => DealixMainNavItem.home,
+    };
 
-            _navItem(
-              icon: Icons.notifications_none_rounded,
-              label: 'Alerts',
-              index: 1,
-            ),
-
-            Expanded(
-              child: GestureDetector(
-                onTap: _openBarcodeScanner,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        color: buttonGreen,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.qr_code_scanner_rounded,
-                        color: white,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    const Text(
-                      'Scan',
-                      style: TextStyle(
-                        color: buttonGreen,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            _navItem(
-              icon: Icons.favorite_border_rounded,
-              label: 'Saved',
-              index: 2,
-            ),
-
-            _navItem(
-              icon: Icons.person_outline_rounded,
-              label: 'Profile',
-              index: 3,
-            ),
-          ],
-        ),
-      ),
+    return DealixMainBottomNav(
+      selectedItem: selectedItem,
+      onTap: _handleBottomNavigation,
     );
   }
 
-  Widget _navItem({
-    required IconData icon,
-    required String label,
-    required int index,
-  }) {
-    final selected = _selectedIndex == index;
+  void _handleBottomNavigation(DealixMainNavItem item) {
+    switch (item) {
+      case DealixMainNavItem.home:
+        setState(() => _selectedIndex = 0);
+        break;
 
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _selectedIndex = index;
-          });
+      case DealixMainNavItem.alerts:
+        setState(() => _selectedIndex = 1);
+        _message('Alerts section coming soon.');
+        break;
 
-          if (index != 0) {
-            _message('$label section coming soon.');
-          }
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: selected ? buttonGreen : greyText, size: 23),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: TextStyle(
-                color: selected ? buttonGreen : greyText,
-                fontSize: 9.5,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
+      case DealixMainNavItem.scan:
+        _openBarcodeScanner();
+        break;
+
+      case DealixMainNavItem.saved:
+        setState(() => _selectedIndex = 2);
+        _message('Saved section coming soon.');
+        break;
+
+      case DealixMainNavItem.profile:
+        _openProfile();
+        break;
+    }
+  }
+
+  Future<void> _openProfile() async {
+    setState(() => _selectedIndex = 3);
+
+    final result = await Navigator.pushNamed<Object?>(
+      context,
+      AppRouter.profile,
     );
+
+    if (!mounted) return;
+
+    setState(() => _selectedIndex = 0);
+
+    if (result == DealixMainNavItem.scan) {
+      await _openBarcodeScanner();
+    }
   }
 }
 

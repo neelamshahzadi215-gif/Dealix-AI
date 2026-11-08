@@ -4,14 +4,24 @@ import '../../core/routes/app_router.dart';
 import 'package:dealix_ai/models/product/product.dart';
 import 'package:dealix_ai/services/mock/mock_data_service.dart';
 import 'package:dealix_ai/services/mock/recent_search_service.dart';
+import 'package:dealix_ai/services/guest_usage_session.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../widgets/common/account_required_dialog.dart';
+import '../../widgets/common/dealix_main_bottom_nav.dart';
 import 'gallery_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key, required String initialQuery});
+  final String initialQuery;
+  final bool openedFromProfile;
+
+  const SearchScreen({
+    super.key,
+    required this.initialQuery,
+    this.openedFromProfile = false,
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -27,9 +37,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   bool _isLoading = true;
   bool _hasError = false;
+  bool _initialSearchBlocked = false;
 
   File? _selectedImage;
   String _searchQuery = '';
+  final GuestUsageSession _guestSession = GuestUsageSession.instance;
 
   final List<String> _popularSearches = [
     'Samsung',
@@ -41,7 +53,22 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    _searchController.text = widget.initialQuery;
+    _searchQuery = widget.initialQuery.trim();
+
+    if (_searchQuery.isNotEmpty && !_guestSession.tryUseSearch()) {
+      _searchQuery = '';
+      _searchController.clear();
+      _initialSearchBlocked = true;
+    }
+
     _loadInitialData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _initialSearchBlocked) {
+        showAccountRequiredDialog(context);
+      }
+    });
   }
 
   @override
@@ -106,9 +133,33 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void _onSearchChanged(String value) {
+    if (_searchQuery.isEmpty) return;
+
+    setState(() {
+      _searchQuery = '';
+      _filteredProducts = List<Product>.from(_allProducts);
+    });
+  }
+
+  void _submitSearch([String? value]) {
+    final query = (value ?? _searchController.text).trim();
+    if (query.isEmpty) {
+      _searchProducts();
+      return;
+    }
+
+    if (!_guestSession.tryUseSearch()) {
+      showAccountRequiredDialog(context);
+      return;
+    }
+
+    _searchProducts(query);
+  }
+
   void _selectPopularSearch(String value) {
     _searchController.text = value;
-    _searchProducts(value);
+    _submitSearch(value);
     FocusScope.of(context).unfocus();
   }
 
@@ -201,10 +252,6 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  void _showNotConnectedMessage(String section) {
-    _showThemedMessage('$section screen is not connected yet.');
-  }
-
   void _showThemedMessage(String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -274,8 +321,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildSearchField() {
     return TextField(
       controller: _searchController,
-      onChanged: _searchProducts,
-      onSubmitted: _searchProducts,
+      onChanged: _onSearchChanged,
+      onSubmitted: _submitSearch,
       textInputAction: TextInputAction.search,
       style: const TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
@@ -476,7 +523,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 onTap: () {
                   _searchController.text = product.name;
-                  _searchProducts(product.name);
+                  _submitSearch(product.name);
                   FocusScope.of(context).unfocus();
                 },
               ),
@@ -750,141 +797,31 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildNavItem({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    bool selected = false,
-  }) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 7),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 23,
-                color: selected
-                    ? AppColors.secondaryTeal
-                    : AppColors.textSecondary,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  color: selected
-                      ? AppColors.secondaryTeal
-                      : AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  void _handleBottomNavigation(DealixMainNavItem item) {
+    switch (item) {
+      case DealixMainNavItem.home:
+        Navigator.popUntil(context, ModalRoute.withName(AppRouter.home));
+        break;
 
-  Widget _buildBottomNavigation() {
-    return SafeArea(
-      top: false,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 9, 8, 7),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          border: const Border(top: BorderSide(color: AppColors.border)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.textPrimary.withValues(alpha: 0.04),
-              blurRadius: 12,
-              offset: const Offset(0, -3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            _buildNavItem(
-              icon: Icons.home_rounded,
-              label: 'Home',
-              onTap: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                } else {
-                  _showNotConnectedMessage('Home');
-                }
-              },
-            ),
-            _buildNavItem(
-              icon: Icons.notifications_none_rounded,
-              label: 'Alerts',
-              onTap: () => _showNotConnectedMessage('Alerts'),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: () {
-  Navigator.pushNamed(context, AppRouter.aiScan);
-},
-                borderRadius: BorderRadius.circular(16),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 49,
-                        height: 43,
-                        decoration: BoxDecoration(
-                          color: AppColors.secondaryTeal,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.secondaryTeal.withValues(
-                                alpha: 0.22,
-                              ),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.qr_code_scanner_rounded,
-                          color: AppColors.white,
-                          size: 25,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Scan',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.secondaryTeal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            _buildNavItem(
-              icon: Icons.bookmark_border_rounded,
-              label: 'Saved',
-              onTap: () => _showNotConnectedMessage('Saved'),
-            ),
-            _buildNavItem(
-              icon: Icons.person_outline_rounded,
-              label: 'Profile',
-              onTap: () => _showNotConnectedMessage('Profile'),
-            ),
-          ],
-        ),
-      ),
-    );
+      case DealixMainNavItem.alerts:
+        Navigator.pushNamed(context, AppRouter.priceAlert);
+        break;
+      case DealixMainNavItem.scan:
+        Navigator.pushNamed(context, AppRouter.aiScan);
+        break;
+
+      case DealixMainNavItem.saved:
+        // Saved screen ka route confirm hone ke baad connect karenge.
+        break;
+
+      case DealixMainNavItem.profile:
+        if (widget.openedFromProfile) {
+          Navigator.popUntil(context, ModalRoute.withName(AppRouter.profile));
+        } else {
+          Navigator.pushNamed(context, AppRouter.profile);
+        }
+        break;
+    }
   }
 
   @override
@@ -928,7 +865,6 @@ class _SearchScreenState extends State<SearchScreen> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              // Home Screen jaisa dark green gradient.
               Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -963,7 +899,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
 
-              // Popular searches aur neeche ka content light rahega.
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
                 child: Column(
@@ -983,7 +918,10 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigation(),
+      bottomNavigationBar: DealixMainBottomNav(
+        selectedItem: null,
+        onTap: _handleBottomNavigation,
+      ),
     );
   }
 }
