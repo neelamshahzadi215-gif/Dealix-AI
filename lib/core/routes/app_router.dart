@@ -13,6 +13,7 @@ import '../../screens/search/gallery_screen.dart';
 import '../../screens/search/ai_scan_screen.dart';
 import '../../screens/analysis/ai_analysis_screen.dart';
 import '../../screens/comparison/comparison_screen.dart';
+import '../../screens/profile/profile_screen.dart';
 
 class AppRouter {
   AppRouter._();
@@ -27,6 +28,7 @@ class AppRouter {
   static const String aiScan = '/ai-scan';
   static const String analysis = '/analysis';
   static const String comparison = '/comparison';
+  static const String profile = '/profile';
   static const String priceAlert = '/price-alert';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -61,12 +63,25 @@ class AppRouter {
           builder: (_) => const HomeScreen(),
         );
 
+      case profile:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const ProfileScreen(),
+        );
+
       case search:
-        final query = settings.arguments as String? ?? '';
+        final arguments = settings.arguments;
+        final query = arguments is String ? arguments : '';
+        final openedFromProfile =
+            arguments is Map<String, Object?> &&
+            arguments['fromProfile'] == true;
 
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => SearchScreen(initialQuery: query),
+          builder: (_) => SearchScreen(
+            initialQuery: query,
+            openedFromProfile: openedFromProfile,
+          ),
         );
 
       case gallery:

@@ -9,6 +9,11 @@ class AppTheme {
   static const double mediumRadius = 12.0;
   static const double largeRadius = 16.0;
 
+  // Spacing
+  static const double spacingSmall = 12.0;
+  static const double spacingMedium = 16.0;
+  static const double spacingLarge = 24.0;
+
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,

@@ -10,12 +10,18 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../widgets/common/account_required_dialog.dart';
+import '../../widgets/common/dealix_main_bottom_nav.dart';
 import 'gallery_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   final String initialQuery;
+  final bool openedFromProfile;
 
-  const SearchScreen({super.key, required this.initialQuery});
+  const SearchScreen({
+    super.key,
+    required this.initialQuery,
+    this.openedFromProfile = false,
+  });
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -244,10 +250,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
       _showThemedMessage('Unable to select image. Please try again.');
     }
-  }
-
-  void _showNotConnectedMessage(String section) {
-    _showThemedMessage('$section screen is not connected yet.');
   }
 
   void _showThemedMessage(String message) {
@@ -795,6 +797,26 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  void _handleBottomNavigation(DealixMainNavItem item) {
+    switch (item) {
+      case DealixMainNavItem.home:
+        Navigator.popUntil(context, ModalRoute.withName(AppRouter.home));
+      case DealixMainNavItem.alerts:
+        _showThemedMessage('Alerts section coming soon.');
+      case DealixMainNavItem.scan:
+        Navigator.pushNamed(context, AppRouter.aiScan);
+      case DealixMainNavItem.saved:
+        _showThemedMessage('Saved section coming soon.');
+      case DealixMainNavItem.profile:
+        if (widget.openedFromProfile) {
+          Navigator.popUntil(
+            context,
+            ModalRoute.withName(AppRouter.profile),
+          );
+        } else {
+          Navigator.pushNamed(context, AppRouter.profile);
+        }
+    }
   Widget _buildNavItem({
     required IconData icon,
     required String label,
@@ -1030,7 +1052,10 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigation(),
+      bottomNavigationBar: DealixMainBottomNav(
+        selectedItem: null,
+        onTap: _handleBottomNavigation,
+      ),
     );
   }
 }
