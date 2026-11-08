@@ -801,159 +801,27 @@ class _SearchScreenState extends State<SearchScreen> {
     switch (item) {
       case DealixMainNavItem.home:
         Navigator.popUntil(context, ModalRoute.withName(AppRouter.home));
+        break;
+
       case DealixMainNavItem.alerts:
-        _showThemedMessage('Alerts section coming soon.');
+        Navigator.pushNamed(context, AppRouter.priceAlert);
+        break;
       case DealixMainNavItem.scan:
         Navigator.pushNamed(context, AppRouter.aiScan);
+        break;
+
       case DealixMainNavItem.saved:
-        _showThemedMessage('Saved section coming soon.');
+        // Saved screen ka route confirm hone ke baad connect karenge.
+        break;
+
       case DealixMainNavItem.profile:
         if (widget.openedFromProfile) {
-          Navigator.popUntil(
-            context,
-            ModalRoute.withName(AppRouter.profile),
-          );
+          Navigator.popUntil(context, ModalRoute.withName(AppRouter.profile));
         } else {
           Navigator.pushNamed(context, AppRouter.profile);
         }
+        break;
     }
-  Widget _buildNavItem({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-    bool selected = false,
-  }) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 7),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 23,
-                color: selected
-                    ? AppColors.secondaryTeal
-                    : AppColors.textSecondary,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  color: selected
-                      ? AppColors.secondaryTeal
-                      : AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigation() {
-    return SafeArea(
-      top: false,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 9, 8, 7),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          border: const Border(top: BorderSide(color: AppColors.border)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.textPrimary.withValues(alpha: 0.04),
-              blurRadius: 12,
-              offset: const Offset(0, -3),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            _buildNavItem(
-              icon: Icons.home_rounded,
-              label: 'Home',
-              onTap: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                } else {
-                  _showNotConnectedMessage('Home');
-                }
-              },
-            ),
-            _buildNavItem(
-              icon: Icons.notifications_none_rounded,
-              label: 'Alerts',
-              onTap: () {
-    Navigator.pushNamed(context, AppRouter.priceAlert);
-  },
-),
-            Expanded(
-              child: InkWell(
-                onTap: () {
-  Navigator.pushNamed(context, AppRouter.aiScan);
-},
-                borderRadius: BorderRadius.circular(16),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 49,
-                        height: 43,
-                        decoration: BoxDecoration(
-                          color: AppColors.secondaryTeal,
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.secondaryTeal.withValues(
-                                alpha: 0.22,
-                              ),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.qr_code_scanner_rounded,
-                          color: AppColors.white,
-                          size: 25,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Scan',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.secondaryTeal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            _buildNavItem(
-              icon: Icons.bookmark_border_rounded,
-              label: 'Saved',
-              onTap: () => _showNotConnectedMessage('Saved'),
-            ),
-            _buildNavItem(
-              icon: Icons.person_outline_rounded,
-              label: 'Profile',
-              onTap: () => _showNotConnectedMessage('Profile'),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
@@ -997,7 +865,6 @@ class _SearchScreenState extends State<SearchScreen> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              // Home Screen jaisa dark green gradient.
               Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -1032,7 +899,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
 
-              // Popular searches aur neeche ka content light rahega.
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
                 child: Column(
