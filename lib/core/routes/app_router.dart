@@ -1,7 +1,6 @@
 import 'package:dealix_ai/models/product/product.dart';
+import 'package:dealix_ai/models/alert/price_alert.dart';
 import 'package:flutter/material.dart';
-
-import '../../screens/price_alert/set_price_alert_screen.dart';
 
 import '../../screens/splash/splash_screen.dart';
 import '../../screens/auth/login_screen.dart';
@@ -14,6 +13,9 @@ import '../../screens/search/ai_scan_screen.dart';
 import '../../screens/analysis/ai_analysis_screen.dart';
 import '../../screens/comparison/comparison_screen.dart';
 import '../../screens/profile/profile_screen.dart';
+import '../../screens/price_alert/set_price_alert_screen.dart';
+import '../../screens/price_alert/my_alerts_screen.dart'
+import '../../screens/history/price_history_screen.dart';
 
 class AppRouter {
   AppRouter._();
@@ -30,108 +32,71 @@ class AppRouter {
   static const String comparison = '/comparison';
   static const String profile = '/profile';
   static const String priceAlert = '/price-alert';
+  static const String myAlerts = '/my-alerts';
+  static const String priceHistory = '/price-history';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const SplashScreen(),
-        );
-
+        return MaterialPageRoute(settings: settings, builder: (_) => const SplashScreen());
       case login:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const LoginScreen(),
-        );
-
+        return MaterialPageRoute(settings: settings, builder: (_) => const LoginScreen());
       case signup:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const SignupScreen(),
-        );
-
+        return MaterialPageRoute(settings: settings, builder: (_) => const SignupScreen());
       case freeUsage:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const FreeUsageScreen(),
-        );
-
+        return MaterialPageRoute(settings: settings, builder: (_) => const FreeUsageScreen());
       case home:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const HomeScreen(),
-        );
-
+        return MaterialPageRoute(settings: settings, builder: (_) => const HomeScreen());
       case profile:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const ProfileScreen(),
-        );
-
+        return MaterialPageRoute(settings: settings, builder: (_) => const ProfileScreen());
       case search:
         final arguments = settings.arguments;
         final query = arguments is String ? arguments : '';
-        final openedFromProfile =
-            arguments is Map<String, Object?> &&
-            arguments['fromProfile'] == true;
-
+        final openedFromProfile = arguments is Map<String, Object?> && arguments['fromProfile'] == true;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => SearchScreen(
-            initialQuery: query,
-            openedFromProfile: openedFromProfile,
-          ),
+          builder: (_) => SearchScreen(initialQuery: query, openedFromProfile: openedFromProfile),
         );
-
       case gallery:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const GalleryScreen(),
-        );
-
+        return MaterialPageRoute(settings: settings, builder: (_) => const GalleryScreen());
       case aiScan:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const AiScanScreen(),
-        );
-
+        return MaterialPageRoute(settings: settings, builder: (_) => const AiScanScreen());
       case analysis:
+        return MaterialPageRoute(settings: settings, builder: (_) => const AiAnalysisScreen());
+      case priceAlert:
+        return MaterialPageRoute(settings: settings, builder: (_) => const SetPriceAlertScreen());
+      case myAlerts:
+        final alerts = settings.arguments as List<PriceAlert>? ?? [];
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => const AiAnalysisScreen(),
+          builder: (_) => MyAlertsScreen(savedAlerts: alerts),
         );
-
-        case priceAlert:
-  return MaterialPageRoute(
-    settings: settings,
-    builder: (_) => const SetPriceAlertScreen(),
-  );
 
       case comparison:
         final product = settings.arguments;
-
         if (product is! Product) {
           return MaterialPageRoute(
             settings: settings,
-            builder: (_) => const Scaffold(
-              body: Center(
-                child: Text('A valid product is required for comparison.'),
-              ),
-            ),
+            builder: (_) => const Scaffold(body: Center(child: Text('A valid product is required for comparison.'))),
           );
         }
+        return MaterialPageRoute(settings: settings, builder: (_) => ComparisonScreen(product: product));
 
+      case priceHistory:
+        final args = settings.arguments;
+        final productId = args is Map<String, dynamic> ? args['productId'] as String? : null;
+        final productName = args is Map<String, dynamic> ? args['productName'] as String? : null;
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => ComparisonScreen(product: product),
+          builder: (_) => PriceHistoryScreen(
+            productId: productId ?? 'p1',
+            productName: productName ?? 'Sony WH-1000XM5 Wireless Headphones',
+          ),
         );
-
       default:
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) =>
-              const Scaffold(body: Center(child: Text('Page not found'))),
+          builder: (_) => const Scaffold(body: Center(child: Text('Page not found'))),
         );
     }
   }

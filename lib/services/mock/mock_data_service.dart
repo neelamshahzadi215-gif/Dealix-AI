@@ -106,24 +106,28 @@ class MockDataService {
       productId: productId,
       points: [
         PriceHistoryPoint(
-          date: now.subtract(const Duration(days: 30)),
-          price: 132999,
+          date: DateTime(now.year, now.month - 5, 1),
+          price: 102800,
         ),
         PriceHistoryPoint(
-          date: now.subtract(const Duration(days: 20)),
-          price: 129999,
+          date: DateTime(now.year, now.month - 4, 1),
+          price: 99500,
         ),
         PriceHistoryPoint(
-          date: now.subtract(const Duration(days: 10)),
-          price: 127999,
+          date: DateTime(now.year, now.month - 3, 1),
+          price: 95000,
         ),
         PriceHistoryPoint(
-          date: now.subtract(const Duration(days: 5)),
-          price: 125999,
+          date: DateTime(now.year, now.month - 2, 1),
+          price: 89990,
         ),
         PriceHistoryPoint(
-          date: now,
-          price: 124999,
+          date: DateTime(now.year, now.month - 1, 1),
+          price: 92000,
+        ),
+        PriceHistoryPoint(
+          date: DateTime(now.year, now.month, 1),
+          price: 96400,
         ),
       ],
     );
