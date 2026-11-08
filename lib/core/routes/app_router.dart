@@ -1,5 +1,5 @@
 import 'package:dealix_ai/models/product/product.dart';
-import 'package:dealix_ai/models/alert/price_alert.dart'; // ✅ Yeh naya import add kiya hai
+import 'package:dealix_ai/models/alert/price_alert.dart';
 import 'package:flutter/material.dart';
 
 import '../../screens/splash/splash_screen.dart';
@@ -14,9 +14,7 @@ import '../../screens/analysis/ai_analysis_screen.dart';
 import '../../screens/comparison/comparison_screen.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../screens/price_alert/set_price_alert_screen.dart';
-import '../../screens/price_alert/my_alerts_screen.dart';
-
-// ✅ AAPKI SCREEN KA IMPORT
+import '../../screens/price_alert/my_alerts_screen.dart'
 import '../../screens/history/price_history_screen.dart';
 
 class AppRouter {
@@ -35,8 +33,6 @@ class AppRouter {
   static const String profile = '/profile';
   static const String priceAlert = '/price-alert';
   static const String myAlerts = '/my-alerts';
-
-  // ✅ AAPKI SCREEN KA ROUTE NAME
   static const String priceHistory = '/price-history';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -69,8 +65,6 @@ class AppRouter {
         return MaterialPageRoute(settings: settings, builder: (_) => const AiAnalysisScreen());
       case priceAlert:
         return MaterialPageRoute(settings: settings, builder: (_) => const SetPriceAlertScreen());
-
-    // ✅ FIX: Ab yeh List<PriceAlert> expect karega, dynamic nahi
       case myAlerts:
         final alerts = settings.arguments as List<PriceAlert>? ?? [];
         return MaterialPageRoute(
@@ -88,7 +82,6 @@ class AppRouter {
         }
         return MaterialPageRoute(settings: settings, builder: (_) => ComparisonScreen(product: product));
 
-    // ✅ AAPKI SCREEN KA CASE (Price History)
       case priceHistory:
         final args = settings.arguments;
         final productId = args is Map<String, dynamic> ? args['productId'] as String? : null;
