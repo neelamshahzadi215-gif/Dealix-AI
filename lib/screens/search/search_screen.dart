@@ -811,7 +811,7 @@ class _SearchScreenState extends State<SearchScreen> {
         break;
 
       case DealixMainNavItem.saved:
-        // Saved screen ka route confirm hone ke baad connect karenge.
+        Navigator.pushNamed(context, AppRouter.favorites);
         break;
 
       case DealixMainNavItem.profile:

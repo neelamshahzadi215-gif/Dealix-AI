@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/history/price_history.dart';
@@ -12,12 +13,17 @@ import 'widgets/price_stats_row.dart';
 import 'widgets/price_insight_banner.dart';
 import 'widgets/alternatives_button.dart';
 import 'widgets/bottom_menu_items.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PriceHistoryScreen extends StatefulWidget {
   final String productId;
   final String productName;
 
-  const PriceHistoryScreen({super.key, required this.productId, required this.productName});
+  const PriceHistoryScreen({
+    super.key,
+    required this.productId,
+    required this.productName,
+  });
 
   @override
   State<PriceHistoryScreen> createState() => _PriceHistoryScreenState();
@@ -37,18 +43,49 @@ class _PriceHistoryScreenState extends State<PriceHistoryScreen> {
   }
 
   Future<void> _loadPriceHistory() async {
-    setState(() { _isLoading = true; _errorMessage = null; });
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
     try {
       final history = await _mockDataService.getPriceHistory(widget.productId);
-      setState(() { _priceHistory = history; _isLoading = false; });
+      setState(() {
+        _priceHistory = history;
+        _isLoading = false;
+      });
     } catch (e) {
-      setState(() { _errorMessage = 'Failed to load price history.'; _isLoading = false; });
+      setState(() {
+        _errorMessage = 'Failed to load price history.';
+        _isLoading = false;
+      });
     }
   }
 
   void _showWorkingMessage(String action) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$action feature is being connected...'), backgroundColor: AppColors.secondaryTeal, behavior: SnackBarBehavior.floating),
+      SnackBar(
+        content: Text('$action feature is being connected...'),
+        backgroundColor: AppColors.secondaryTeal,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _shareProduct() async {
+    final message =
+        '''
+Check out ${widget.productName} on Dealix AI!
+
+Track product prices, compare stores, and find the best deals.
+
+Product ID: ${widget.productId}
+''';
+
+    await SharePlus.instance.share(
+      ShareParams(
+        text: message,
+        subject: 'Check out this product on Dealix AI',
+      ),
     );
   }
 
@@ -59,11 +96,60 @@ class _PriceHistoryScreenState extends State<PriceHistoryScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary), onPressed: () => Navigator.pop(context)),
-        title: Text('Price History', style: Theme.of(context).textTheme.titleLarge),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Price History',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         actions: [
-          IconButton(icon: const Icon(Icons.notifications_outlined, color: AppColors.textPrimary), onPressed: () => _showWorkingMessage('Notifications')),
-          IconButton(icon: const Icon(Icons.more_vert, color: AppColors.textPrimary), onPressed: () => _showWorkingMessage('More Options')),
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_outlined,
+              color: AppColors.textPrimary,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, AppRouter.myAlerts);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: AppColors.textPrimary),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: AppColors.white,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                builder: (sheetContext) {
+                  return SafeArea(
+                    child: Wrap(
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.share),
+                          title: const Text('Share Price History'),
+                          onTap: () {
+                            Navigator.pop(sheetContext);
+                            _shareProduct();
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.refresh),
+                          title: const Text('Refresh Data'),
+                          onTap: () {
+                            Navigator.pop(sheetContext);
+                            _loadPriceHistory();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
         ],
         centerTitle: true,
       ),
@@ -73,9 +159,14 @@ class _PriceHistoryScreenState extends State<PriceHistoryScreen> {
 
   Widget _buildBody() {
     if (_isLoading) return const Center(child: LoadingSkeleton());
-    if (_errorMessage != null) return ErrorState(message: _errorMessage!, onRetry: _loadPriceHistory);
+    if (_errorMessage != null)
+      // ignore: curly_braces_in_flow_control_structures
+      return ErrorState(message: _errorMessage!, onRetry: _loadPriceHistory);
     if (_priceHistory == null || _priceHistory!.points.isEmpty) {
-      return const EmptyState(title: 'No price history available', message: 'Price history will appear here once tracked.');
+      return const EmptyState(
+        title: 'No price history available',
+        message: 'Price history will appear here once tracked.',
+      );
     }
     return _buildContent();
   }
@@ -90,16 +181,27 @@ class _PriceHistoryScreenState extends State<PriceHistoryScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProductHeaderSection(productName: widget.productName, brand: 'Sony', rating: 4.6, reviewCount: 8200),
+            ProductHeaderSection(
+              productName: widget.productName,
+              brand: 'Sony',
+              rating: 4.6,
+              reviewCount: 8200,
+            ),
             const SizedBox(height: AppTheme.spacingLarge),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Price Trend', style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  'Price Trend',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
                 GestureDetector(
                   onTap: () => _showWorkingMessage('Time Range Picker'),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingSmall, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.spacingSmall,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.border),
                       borderRadius: BorderRadius.circular(AppTheme.smallRadius),
@@ -107,9 +209,20 @@ class _PriceHistoryScreenState extends State<PriceHistoryScreen> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.calendar_today, size: 16, color: AppColors.textSecondary),
+                        const Icon(
+                          Icons.calendar_today,
+                          size: 16,
+                          color: AppColors.textSecondary,
+                        ),
                         const SizedBox(width: 8),
-                        Text('Last $_selectedTimeRange', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary, fontWeight: FontWeight.w500)),
+                        Text(
+                          'Last $_selectedTimeRange',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
                       ],
                     ),
                   ),
@@ -117,18 +230,29 @@ class _PriceHistoryScreenState extends State<PriceHistoryScreen> {
               ],
             ),
             const SizedBox(height: AppTheme.spacingMedium),
-            PriceTrendChart(priceHistory: _priceHistory!, timeRange: _selectedTimeRange),
+            PriceTrendChart(
+              priceHistory: _priceHistory!,
+              timeRange: _selectedTimeRange,
+            ),
             const SizedBox(height: AppTheme.spacingMedium),
             PriceStatsRow(priceHistory: _priceHistory!),
             const SizedBox(height: AppTheme.spacingMedium),
             PriceInsightBanner(priceHistory: _priceHistory!),
             const SizedBox(height: AppTheme.spacingLarge),
-            AlternativesButton(onTap: () => _showWorkingMessage('Finding Cheaper Alternatives')),
+            AlternativesButton(
+              onTap: () {
+                Navigator.pushNamed(context, AppRouter.alternatives);
+              },
+            ),
             const SizedBox(height: AppTheme.spacingSmall),
             BottomMenuItems(
               productId: widget.productId,
-              onSetAlert: () => _showWorkingMessage('Setting Price Alert'),
-              onShare: () => _showWorkingMessage('Sharing Product'),
+
+              onSetAlert: () {
+                Navigator.pushNamed(context, AppRouter.priceAlert);
+              },
+
+              onShare: _shareProduct,
             ),
           ],
         ),

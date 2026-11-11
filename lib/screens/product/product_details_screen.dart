@@ -231,9 +231,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           const SizedBox(height: 16),
 
           ProductInfoSection(product: product),
+          const SizedBox(height: 16),
+
+          // Price History Button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRouter.priceHistory,
+                  arguments: <String, dynamic>{
+                    'productId': product.id,
+                    'productName': product.name,
+                  },
+                );
+              },
+              icon: const Icon(Icons.show_chart),
+              label: const Text('View Price History'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.secondaryTeal,
+                foregroundColor: AppColors.white,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
+
           const SizedBox(height: 20),
 
           _buildStoreSummary(),
+
           const SizedBox(height: 20),
 
           ProductActions(

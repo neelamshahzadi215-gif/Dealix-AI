@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../models/product/product.dart';
 import '../../services/favorites/favorites_store.dart';
@@ -81,11 +80,7 @@ class _FavoriteProductCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: () {
-        Navigator.pushNamed(
-          context,
-          AppRouter.productDetails,
-          arguments: product,
-        );
+        Navigator.pushNamed(context, '/product-details', arguments: product);
       },
       child: Container(
         padding: const EdgeInsets.all(12),

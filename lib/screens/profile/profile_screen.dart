@@ -426,7 +426,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       case DealixMainNavItem.home:
         _returnToHome();
       case DealixMainNavItem.alerts:
-        _showMessage('Alerts section coming soon.');
+        Navigator.pushNamed(context, AppRouter.myAlerts);
+        break;
       case DealixMainNavItem.scan:
         if (Navigator.canPop(context)) {
           Navigator.pop(context, DealixMainNavItem.scan);
@@ -434,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Navigator.pushNamed(context, AppRouter.aiScan);
         }
       case DealixMainNavItem.saved:
-        _showMessage('Saved section coming soon.');
+        Navigator.pushNamed(context, AppRouter.favorites);
       case DealixMainNavItem.profile:
         break;
     }

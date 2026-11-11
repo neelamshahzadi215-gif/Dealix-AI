@@ -18,6 +18,7 @@ import '../../screens/profile/profile_screen.dart';
 import '../../screens/price_alert/set_price_alert_screen.dart';
 import '../../screens/price_alert/my_alerts_screen.dart';
 import '../../screens/history/price_history_screen.dart';
+import '../../screens/alternatives/alternatives_screen.dart';
 
 class AppRouter {
   AppRouter._();
@@ -38,6 +39,7 @@ class AppRouter {
   static const String priceAlert = '/price-alert';
   static const String myAlerts = '/my-alerts';
   static const String priceHistory = '/price-history';
+  static const String alternatives = '/alternatives';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -187,6 +189,12 @@ class AppRouter {
             productId: productId ?? 'p1',
             productName: productName ?? 'Sony WH-1000XM5 Wireless Headphones',
           ),
+        );
+
+      case alternatives:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const AlternativesScreen(),
         );
 
       default:
