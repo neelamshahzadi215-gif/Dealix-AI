@@ -1,7 +1,7 @@
-//
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/product/product.dart';
@@ -107,6 +107,15 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
     return '${widget.product.currency} ${price.toStringAsFixed(0)}';
   }
 
+  // Navigate to the exact product being compared.
+  void _openProductDetails() {
+    Navigator.pushNamed(
+      context,
+      AppRouter.productDetails,
+      arguments: widget.product,
+    );
+  }
+
   Future<void> _openStore(StoreOffer offer) async {
     if (!offer.isAvailable) {
       _showMessage('This store is currently unavailable.');
@@ -175,7 +184,13 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
-          _buildProductHeader(),
+          // Tap product header to open its details.
+          InkWell(
+            onTap: _openProductDetails,
+            borderRadius: BorderRadius.circular(AppTheme.largeRadius),
+            child: _buildProductHeader(),
+          ),
+
           const SizedBox(height: 18),
 
           if (bestOffer != null) ...[
@@ -266,7 +281,6 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
 
           _buildUnavailableSection(bestOffer),
 
-          // Saving button at the bottom of the comparison screen.
           _buildSavingsButton(),
         ],
       ),
@@ -362,6 +376,12 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
                 ),
               ],
             ),
+          ),
+          const SizedBox(width: 8),
+          const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 16,
+            color: AppColors.textSecondary,
           ),
         ],
       ),
