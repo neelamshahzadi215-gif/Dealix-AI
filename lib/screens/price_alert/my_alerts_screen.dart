@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../core/routes/app_router.dart';
@@ -12,10 +11,7 @@ import 'set_price_alert_screen.dart';
 class MyAlertsScreen extends StatefulWidget {
   final List<PriceAlert> savedAlerts;
 
-  const MyAlertsScreen({
-    super.key,
-    required this.savedAlerts,
-  });
+  const MyAlertsScreen({super.key, required this.savedAlerts});
 
   @override
   State<MyAlertsScreen> createState() => _MyAlertsScreenState();
@@ -59,17 +55,13 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
   String _formatPrice(double price) {
     final value = price.round().toString();
 
-    return 'Rs ${value.replaceAllMapped(
-      RegExp(r'\B(?=(\d{3})+(?!\d))'),
-      (match) => ',',
-    )}';
+    return 'Rs ${value.replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',')}';
   }
 
   int _calculateDrop(double currentPrice, double targetPrice) {
     if (currentPrice <= 0) return 0;
 
-    return (((currentPrice - targetPrice) / currentPrice) * 100)
-        .round();
+    return (((currentPrice - targetPrice) / currentPrice) * 100).round();
   }
 
   void _showMessage(BuildContext context, String message) {
@@ -79,9 +71,9 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         SnackBar(
           content: Text(
             message,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.white,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.white),
           ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: AppColors.secondaryTeal,
@@ -129,11 +121,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     _showMessage(context, 'Alert removed successfully.');
   }
 
-  Widget _buildTabButton(
-    BuildContext context,
-    String title,
-    int index,
-  ) {
+  Widget _buildTabButton(BuildContext context, String title, int index) {
     final isSelected = _selectedTabIndex == index;
     final textTheme = Theme.of(context).textTheme;
 
@@ -147,25 +135,17 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 13),
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.secondaryTeal
-                : AppColors.white,
-            borderRadius: BorderRadius.circular(
-              AppTheme.mediumRadius,
-            ),
+            color: isSelected ? AppColors.secondaryTeal : AppColors.white,
+            borderRadius: BorderRadius.circular(AppTheme.mediumRadius),
             border: Border.all(
-              color: isSelected
-                  ? AppColors.secondaryTeal
-                  : AppColors.border,
+              color: isSelected ? AppColors.secondaryTeal : AppColors.border,
             ),
           ),
           child: Text(
             title,
             textAlign: TextAlign.center,
             style: textTheme.titleSmall?.copyWith(
-              color: isSelected
-                  ? AppColors.white
-                  : AppColors.textSecondary,
+              color: isSelected ? AppColors.white : AppColors.textSecondary,
             ),
           ),
         ),
@@ -173,29 +153,18 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
-  Widget _buildAlertCard(
-    BuildContext context,
-    PriceAlert alert,
-    int index,
-  ) {
+  Widget _buildAlertCard(BuildContext context, PriceAlert alert, int index) {
     final textTheme = Theme.of(context).textTheme;
 
-    final drop = _calculateDrop(
-      alert.currentPrice,
-      alert.targetPrice,
-    );
+    final drop = _calculateDrop(alert.currentPrice, alert.targetPrice);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(
-          AppTheme.largeRadius,
-        ),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        borderRadius: BorderRadius.circular(AppTheme.largeRadius),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,9 +176,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                 width: 48,
                 decoration: BoxDecoration(
                   color: AppColors.lightMint,
-                  borderRadius: BorderRadius.circular(
-                    AppTheme.mediumRadius,
-                  ),
+                  borderRadius: BorderRadius.circular(AppTheme.mediumRadius),
                 ),
                 child: const Icon(
                   Icons.notifications_active_rounded,
@@ -218,19 +185,16 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(
-                  alert.productName,
-                  style: textTheme.titleSmall,
-                ),
+                child: Text(alert.productName, style: textTheme.titleSmall),
               ),
               Switch(
-                value: alert.isEnabled &&
-                    !_disabledAlertIds.contains(alert.id),
+                value: alert.isEnabled && !_disabledAlertIds.contains(alert.id),
                 activeThumbColor: AppColors.white,
                 activeTrackColor: AppColors.secondaryTeal,
                 inactiveThumbColor: AppColors.white,
-                inactiveTrackColor:
-                    Theme.of(context).colorScheme.outlineVariant,
+                inactiveTrackColor: Theme.of(
+                  context,
+                ).colorScheme.outlineVariant,
                 onChanged: (value) => _toggleAlert(index, value),
               ),
             ],
@@ -264,9 +228,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                 ),
                 decoration: BoxDecoration(
                   color: AppColors.softMint,
-                  borderRadius: BorderRadius.circular(
-                    AppTheme.largeRadius,
-                  ),
+                  borderRadius: BorderRadius.circular(AppTheme.largeRadius),
                 ),
                 child: Text(
                   '$drop% price drop',
@@ -284,9 +246,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                 ),
                 label: Text(
                   'Remove',
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: AppColors.error,
-                  ),
+                  style: textTheme.bodyMedium?.copyWith(color: AppColors.error),
                 ),
               ),
             ],
@@ -296,33 +256,20 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     );
   }
 
-  Widget _buildPriceInfo(
-    BuildContext context,
-    String title,
-    String price,
-  ) {
+  Widget _buildPriceInfo(BuildContext context, String title, String price) {
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: textTheme.bodySmall,
-        ),
+        Text(title, style: textTheme.bodySmall),
         const SizedBox(height: 5),
-        Text(
-          price,
-          style: textTheme.titleSmall,
-        ),
+        Text(price, style: textTheme.titleSmall),
       ],
     );
   }
 
-  Widget _buildWatchlistCard(
-    BuildContext context,
-    Product product,
-  ) {
+  Widget _buildWatchlistCard(BuildContext context, Product product) {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
@@ -330,12 +277,8 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(
-          AppTheme.largeRadius,
-        ),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        borderRadius: BorderRadius.circular(AppTheme.largeRadius),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
@@ -344,9 +287,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
             width: 58,
             decoration: BoxDecoration(
               color: AppColors.lightMint,
-              borderRadius: BorderRadius.circular(
-                AppTheme.mediumRadius,
-              ),
+              borderRadius: BorderRadius.circular(AppTheme.mediumRadius),
             ),
             child: const Icon(
               Icons.shopping_bag_outlined,
@@ -402,10 +343,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               color: AppColors.secondaryTeal,
             ),
             const SizedBox(height: 14),
-            Text(
-              'No Price Alerts Yet',
-              style: textTheme.titleLarge,
-            ),
+            Text('No Price Alerts Yet', style: textTheme.titleLarge),
             const SizedBox(height: 7),
             Text(
               'Set an alert to get notified when\nyour product price drops.',
@@ -454,9 +392,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
 
     return Column(
       children: _watchlistProducts
-          .map(
-            (product) => _buildWatchlistCard(context, product),
-          )
+          .map((product) => _buildWatchlistCard(context, product))
           .toList(),
     );
   }
@@ -470,11 +406,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
         padding: const EdgeInsets.fromLTRB(8, 9, 8, 7),
         decoration: BoxDecoration(
           color: AppColors.white,
-          border: const Border(
-            top: BorderSide(
-              color: AppColors.border,
-            ),
-          ),
+          border: const Border(top: BorderSide(color: AppColors.border)),
           boxShadow: [
             BoxShadow(
               color: AppColors.textPrimary.withValues(alpha: 0.04),
@@ -505,9 +437,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                 onTap: () {
                   Navigator.pushNamed(context, AppRouter.aiScan);
                 },
-                borderRadius: BorderRadius.circular(
-                  AppTheme.largeRadius,
-                ),
+                borderRadius: BorderRadius.circular(AppTheme.largeRadius),
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 2),
                   child: Column(
@@ -555,10 +485,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
               icon: Icons.person_outline_rounded,
               label: 'Profile',
               onTap: () {
-                _showMessage(
-                  context,
-                  'Profile screen not connected',
-                );
+                Navigator.pushNamed(context, AppRouter.profile);
               },
             ),
           ],
@@ -579,9 +506,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(
-          AppTheme.mediumRadius,
-        ),
+        borderRadius: BorderRadius.circular(AppTheme.mediumRadius),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 7),
           child: Column(
@@ -600,9 +525,7 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                   color: selected
                       ? AppColors.secondaryTeal
                       : AppColors.textSecondary,
-                  fontWeight: selected
-                      ? FontWeight.w600
-                      : FontWeight.normal,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
             ],
@@ -625,64 +548,43 @@ class _MyAlertsScreenState extends State<MyAlertsScreen> {
                 style: Theme.of(themeContext).textTheme.titleLarge,
               ),
             ),
-            bottomNavigationBar:
-                _buildBottomNavigation(themeContext),
+            bottomNavigationBar: _buildBottomNavigation(themeContext),
             body: SafeArea(
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      20,
-                      18,
-                      20,
-                      16,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
                     child: Row(
                       children: [
-                        _buildTabButton(
-                          themeContext,
-                          'Price Alerts',
-                          0,
-                        ),
+                        _buildTabButton(themeContext, 'Price Alerts', 0),
                         const SizedBox(width: 10),
-                        _buildTabButton(
-                          themeContext,
-                          'Watchlist',
-                          1,
-                        ),
+                        _buildTabButton(themeContext, 'Watchlist', 1),
                       ],
                     ),
                   ),
                   Expanded(
                     child: _selectedTabIndex == 0
                         ? widget.savedAlerts.isEmpty
-                            ? _buildEmptyAlerts(themeContext)
-                            : ListView.builder(
-                                padding: const EdgeInsets.fromLTRB(
-                                  20,
-                                  4,
-                                  20,
-                                  20,
-                                ),
-                                itemCount: widget.savedAlerts.length,
-                                itemBuilder: (context, index) {
-                                  return _buildAlertCard(
-                                    themeContext,
-                                    widget.savedAlerts[index],
-                                    index,
-                                  );
-                                },
-                              )
+                              ? _buildEmptyAlerts(themeContext)
+                              : ListView.builder(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    4,
+                                    20,
+                                    20,
+                                  ),
+                                  itemCount: widget.savedAlerts.length,
+                                  itemBuilder: (context, index) {
+                                    return _buildAlertCard(
+                                      themeContext,
+                                      widget.savedAlerts[index],
+                                      index,
+                                    );
+                                  },
+                                )
                         : ListView(
-                            padding: const EdgeInsets.fromLTRB(
-                              20,
-                              4,
-                              20,
-                              20,
-                            ),
-                            children: [
-                              _buildWatchlistContent(themeContext),
-                            ],
+                            padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+                            children: [_buildWatchlistContent(themeContext)],
                           ),
                   ),
                 ],

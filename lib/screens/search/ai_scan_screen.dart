@@ -21,8 +21,7 @@ class AiScanScreen extends StatefulWidget {
 }
 
 class _AiScanScreenState extends State<AiScanScreen> {
-  final TextEditingController _productNameController =
-      TextEditingController();
+  final TextEditingController _productNameController = TextEditingController();
 
   final ImagePicker _imagePicker = ImagePicker();
 
@@ -31,7 +30,7 @@ class _AiScanScreenState extends State<AiScanScreen> {
 
   String _searchedName = '';
   _ScanDetails? _searchedDetails;
-final bool _isLoading = false;
+  final bool _isLoading = false;
   bool _hasError = false;
   bool _hasAnalyzed = false;
 
@@ -43,8 +42,7 @@ final bool _isLoading = false;
 
   Future<void> _recoverLostImage() async {
     try {
-      final LostDataResponse response =
-          await _imagePicker.retrieveLostData();
+      final LostDataResponse response = await _imagePicker.retrieveLostData();
 
       if (response.isEmpty) return;
 
@@ -55,9 +53,7 @@ final bool _isLoading = false;
         await _setSelectedImage(File(files.first.path));
       } else if (response.exception != null) {
         if (!mounted) return;
-        _showMessage(
-          'Camera image recover nahi hui. Dobara try karein.',
-        );
+        _showMessage('Camera image could not be recovered. Please try again.');
       }
     } catch (e) {
       debugPrint('Lost image recovery error: $e');
@@ -161,10 +157,7 @@ final bool _isLoading = false;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        SnackBar(
-          content: Text(message),
-          behavior: SnackBarBehavior.floating,
-        ),
+        SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
       );
   }
 
@@ -195,20 +188,13 @@ final bool _isLoading = false;
     final String rawName = _productNameController.text.trim();
 
     final List<String> detailTerms = [
-      if (details.brand.trim().isNotEmpty)
-        details.brand.trim(),
-      if (details.model.trim().isNotEmpty)
-        details.model.trim(),
-      if (details.variant.trim().isNotEmpty)
-        details.variant.trim(),
+      if (details.brand.trim().isNotEmpty) details.brand.trim(),
+      if (details.model.trim().isNotEmpty) details.model.trim(),
+      if (details.variant.trim().isNotEmpty) details.variant.trim(),
     ];
 
-    if (rawName.isEmpty &&
-        _selectedImage == null &&
-        detailTerms.isEmpty) {
-      _showMessage(
-        'Product name, photo ya details mein se kuch add karein.',
-      );
+    if (rawName.isEmpty && _selectedImage == null && detailTerms.isEmpty) {
+      _showMessage('Product name, photo ya details mein se kuch add karein.');
       return;
     }
 
@@ -249,10 +235,7 @@ final bool _isLoading = false;
           elevation: 0,
           title: const Text(
             'AI Product Scan',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
         body: SafeArea(
@@ -279,9 +262,7 @@ final bool _isLoading = false;
                         const SizedBox(height: 24),
                         _buildError(),
                       ],
-                      if (_hasAnalyzed &&
-                          !_isLoading &&
-                          !_hasError) ...[
+                      if (_hasAnalyzed && !_isLoading && !_hasError) ...[
                         const SizedBox(height: 24),
                         _buildSearchSummary(),
                         _buildResults(),
@@ -294,9 +275,7 @@ final bool _isLoading = false;
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
                 decoration: const BoxDecoration(
                   color: AppColors.white,
-                  border: Border(
-                    top: BorderSide(color: AppColors.border),
-                  ),
+                  border: Border(top: BorderSide(color: AppColors.border)),
                 ),
                 child: SizedBox(
                   width: double.infinity,
@@ -485,10 +464,7 @@ final bool _isLoading = false;
         suffixIcon: IconButton(
           tooltip: 'Search',
           onPressed: _isLoading ? null : _analyzeWithAI,
-          icon: const Icon(
-            Icons.search,
-            color: AppColors.secondaryTeal,
-          ),
+          icon: const Icon(Icons.search, color: AppColors.secondaryTeal),
         ),
         filled: true,
         fillColor: AppColors.white,
@@ -536,16 +512,11 @@ final bool _isLoading = false;
         padding: EdgeInsets.all(24),
         child: Column(
           children: [
-            CircularProgressIndicator(
-              color: AppColors.primaryGreen,
-            ),
+            CircularProgressIndicator(color: AppColors.primaryGreen),
             SizedBox(height: 14),
             Text(
               'Finding matching products...',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
           ],
         ),
@@ -564,11 +535,7 @@ final bool _isLoading = false;
       ),
       child: Column(
         children: [
-          const Icon(
-            Icons.error_outline,
-            size: 38,
-            color: AppColors.error,
-          ),
+          const Icon(Icons.error_outline, size: 38, color: AppColors.error),
           const SizedBox(height: 10),
           const Text(
             'Something went wrong',
@@ -581,16 +548,10 @@ final bool _isLoading = false;
           const SizedBox(height: 8),
           const Text(
             'Please try again.',
-            style: TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 13,
-            ),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 12),
-          TextButton(
-            onPressed: _analyzeWithAI,
-            child: const Text('Try Again'),
-          ),
+          TextButton(onPressed: _analyzeWithAI, child: const Text('Try Again')),
         ],
       ),
     );
@@ -600,8 +561,7 @@ final bool _isLoading = false;
     final details = _searchedDetails;
 
     final items = <MapEntry<String, String>>[
-      if (_searchedName.isNotEmpty)
-        MapEntry('Product', _searchedName),
+      if (_searchedName.isNotEmpty) MapEntry('Product', _searchedName),
       if (details?.brand.trim().isNotEmpty == true)
         MapEntry('Brand', details!.brand.trim()),
       if (details?.model.trim().isNotEmpty == true)
@@ -652,9 +612,7 @@ final bool _isLoading = false;
                     children: [
                       TextSpan(
                         text: '${item.key}: ',
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                        ),
+                        style: const TextStyle(color: AppColors.textSecondary),
                       ),
                       TextSpan(
                         text: item.value,
@@ -705,10 +663,7 @@ final bool _isLoading = false;
             const Text(
               'Try another product name or different details.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 8),
             TextButton(
@@ -818,10 +773,7 @@ final bool _isLoading = false;
               ],
             ),
           ),
-          const Icon(
-            Icons.chevron_right,
-            color: AppColors.textSecondary,
-          ),
+          const Icon(Icons.chevron_right, color: AppColors.textSecondary),
         ],
       ),
     );
@@ -834,11 +786,7 @@ class _ScanDetails {
   final String model;
   final String variant;
 
-  const _ScanDetails({
-    this.brand = '',
-    this.model = '',
-    this.variant = '',
-  });
+  const _ScanDetails({this.brand = '', this.model = '', this.variant = ''});
 }
 
 // Details popup.
@@ -869,9 +817,7 @@ class _DetailsSheetState extends State<_DetailsSheet> {
 
   void _addVariantHint(String label) {
     final text = _variantController.text;
-    final prefix = text.isEmpty || text.endsWith(' ')
-        ? text
-        : '$text ';
+    final prefix = text.isEmpty || text.endsWith(' ') ? text : '$text ';
 
     final newText = '$prefix$label: ';
 
@@ -894,9 +840,7 @@ class _DetailsSheetState extends State<_DetailsSheet> {
   }
 
   void _skip() {
-    Navigator.of(context).pop(
-      const _ScanDetails(),
-    );
+    Navigator.of(context).pop(const _ScanDetails());
   }
 
   @override
@@ -908,9 +852,7 @@ class _DetailsSheetState extends State<_DetailsSheet> {
       child: Container(
         decoration: const BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(24),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: SafeArea(
           top: false,
@@ -929,10 +871,7 @@ class _DetailsSheetState extends State<_DetailsSheet> {
                       shape: BoxShape.circle,
                     ),
                     child: const Center(
-                      child: Text(
-                        '✨',
-                        style: TextStyle(fontSize: 24),
-                      ),
+                      child: Text('✨', style: TextStyle(fontSize: 24)),
                     ),
                   ),
                 ),
@@ -988,22 +927,10 @@ class _DetailsSheetState extends State<_DetailsSheet> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _chip(
-                      '+ Model no.',
-                      () => _modelFocus.requestFocus(),
-                    ),
-                    _chip(
-                      '+ Color',
-                      () => _addVariantHint('Color'),
-                    ),
-                    _chip(
-                      '+ Storage',
-                      () => _addVariantHint('Storage'),
-                    ),
-                    _chip(
-                      '+ Condition',
-                      () => _addVariantHint('Condition'),
-                    ),
+                    _chip('+ Model no.', () => _modelFocus.requestFocus()),
+                    _chip('+ Color', () => _addVariantHint('Color')),
+                    _chip('+ Storage', () => _addVariantHint('Storage')),
+                    _chip('+ Condition', () => _addVariantHint('Condition')),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -1118,10 +1045,7 @@ class _DetailsSheetState extends State<_DetailsSheet> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 7,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           color: AppColors.softMint,
           borderRadius: BorderRadius.circular(20),

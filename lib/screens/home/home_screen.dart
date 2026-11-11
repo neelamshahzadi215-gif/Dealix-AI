@@ -874,18 +874,16 @@ class _HomeScreenState extends State<HomeScreen> {
   // =========================================================
 
   Widget _searchBar() {
-    return Container(
+    return SizedBox(
       height: 54,
-      decoration: BoxDecoration(
-        color: white,
-        borderRadius: BorderRadius.circular(18),
-      ),
       child: TextField(
         controller: _searchController,
         textInputAction: TextInputAction.search,
         onSubmitted: (_) => _search(),
         style: const TextStyle(color: darkText, fontSize: 14),
         decoration: InputDecoration(
+          filled: true,
+          fillColor: white,
           hintText: 'Search for a product, brand...',
           hintStyle: const TextStyle(color: greyText, fontSize: 13),
           prefixIcon: const Icon(
@@ -901,10 +899,17 @@ class _HomeScreenState extends State<HomeScreen> {
               size: 21,
             ),
           ),
-          border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 14,
             vertical: 16,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: BorderSide(color: borderGreen, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: BorderSide(color: buttonGreen, width: 1.2),
           ),
         ),
       ),
@@ -1053,7 +1058,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       case DealixMainNavItem.alerts:
         setState(() => _selectedIndex = 1);
-        _message('Alerts section coming soon.');
+        Navigator.pushNamed(context, AppRouter.myAlerts);
         break;
 
       case DealixMainNavItem.scan:
@@ -1062,7 +1067,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       case DealixMainNavItem.saved:
         setState(() => _selectedIndex = 2);
-        _message('Saved section coming soon.');
+        Navigator.pushNamed(context, AppRouter.favorites);
         break;
 
       case DealixMainNavItem.profile:
